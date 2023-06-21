@@ -1,13 +1,14 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-List<DateTime> getWeekDates(int weekNumber) {
-  final DateTime now = DateTime.now();
-  final DateTime firstDayOfYear = DateTime(now.year, 1, 1);
+List<DateTime> getWeekDates({required int year, required int weekNumber}) {
+  final DateTime firstDayOfYear = DateTime(year, 1, 1);
   final int daysOffset = (weekNumber - 1) * 7;
 
-  final DateTime firstDayOfTargetWeek = firstDayOfYear.add(Duration(days: daysOffset));
+  final DateTime firstDayOfTargetWeek =
+      firstDayOfYear.add(Duration(days: daysOffset));
   final List<DateTime> weekDates = [];
 
   for (int i = 0; i < 7; i++) {
@@ -17,7 +18,6 @@ List<DateTime> getWeekDates(int weekNumber) {
 
   return weekDates;
 }
-
 
 class DaysScroll extends StatefulWidget {
   const DaysScroll({Key? key}) : super(key: key);
@@ -60,17 +60,15 @@ class _DaysScrollState extends State<DaysScroll> {
 
   @override
   Widget build(BuildContext context) {
-
+    print(getWeekDates(weekNumber: 1, year: 2023));
     return Container(
-        height: 60,
-        color: Colors.green,
+        height: 100,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: 3,
           scrollDirection: Axis.horizontal,
           physics: const PageScrollPhysics(),
           itemBuilder: (context, indexWeek) {
-            List<DateTime> currentWeekDates = getWeekDates(indexWeek);
             return SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Center(
@@ -84,40 +82,62 @@ class _DaysScrollState extends State<DaysScroll> {
                     controller: scrollController,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int indexDay) {
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            currentDateSelectedIndex = indexDay;
-                            selectedDate =
-                                DateTime.now().add(Duration(days: indexDay));
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            Text(listOfDays[indexDay]),
-                            InkWell(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: currentDateSelectedIndex == indexDay
-                                        ? getAppColorScheme(context).primary
-                                        : getAppColorScheme(context).onPrimary),
-                                child: Text(
-                                  "${currentWeekDates[indexDay].day}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: currentDateSelectedIndex ==
-                                              indexDay
-                                          ? getAppColorScheme(context).onPrimary
-                                          : getAppTextTheme(context)
-                                              .bodyText1!
-                                              .color),
-                                ),
+                      DateTime currentDate = getWeekDates(
+                          weekNumber: indexWeek + 1, year: 2023)[indexDay];
+                      return Column(
+                        children: [
+                          Text(DateFormat.MMM().format(currentDate)),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                currentDateSelectedIndex = indexDay;
+                                selectedDate =
+                                    DateTime.now().add(Duration(days: indexDay));
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              width: MediaQuery.of(context).size.width * 0.11,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: currentDateSelectedIndex == indexDay
+                                      ? getAppColorScheme(context).primary
+                                      : getAppColorScheme(context).onPrimary),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    DateFormat.E().format(currentDate),
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: currentDateSelectedIndex ==
+                                                indexDay
+                                            ? getAppColorScheme(context)
+                                                .onPrimary
+                                            : getAppTextTheme(context)
+                                                .bodyText1!
+                                                .color),
+                                  ),
+                                  Text(
+                                    "${currentDate.day}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: currentDateSelectedIndex ==
+                                                indexDay
+                                            ? getAppColorScheme(context)
+                                                .onPrimary
+                                            : getAppTextTheme(context)
+                                                .bodyText1!
+                                                .color),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            DateFormat.y().format(currentDate),
+                            style: getAppTextTheme(context).subtitle1,
+                          ),
+                        ],
                       );
                     }),
               ),
@@ -126,4 +146,6 @@ class _DaysScrollState extends State<DaysScroll> {
         ));
   }
 }
+
 /// TODO avoid nesting the listview.builder but make the direction in another way
+/// TODO fix the choosing
