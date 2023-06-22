@@ -23,7 +23,7 @@ class ChooseUser extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   borderRadius: 30,
                   hasShadow: true,
-                  onTap: () => _becomeAMemberDialog(context),
+                  onTap: () => _becomeAMemberDialog(context).then((value) => print("value: $value")),
                   child: Row(
                     children: [
                       const SizedBox(
@@ -188,7 +188,7 @@ Future _becomeAMemberDialog(context) {
                             }, "Cancel"),
                             _dialogActionText(() {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pop(context);
+                                Navigator.pop(context, [firstName,lastName]);
                               }
                             }, "Add !"),
                           ],
