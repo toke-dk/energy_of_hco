@@ -1,4 +1,5 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/pages/add_items.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class ChooseUser extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   borderRadius: 30,
                   hasShadow: true,
+                  ///Todo do something with this value
                   onTap: () => _becomeAMemberDialog(context).then((value) => print("value: $value")),
                   child: Row(
                     children: [
@@ -81,7 +83,7 @@ class ChooseUser extends StatelessWidget {
                         ))
                       ],
                       rows: allUsers
-                          .map((e) => DataRow(onSelectChanged: (_) {}, cells: [
+                          .map((e) => DataRow(onSelectChanged: (_) {Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddItems()));}, cells: [
                                 DataCell(Text(e["name"])),
                                 DataCell(Text(e["ep"].toString()))
                               ]))
