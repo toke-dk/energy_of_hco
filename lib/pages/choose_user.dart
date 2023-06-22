@@ -184,9 +184,7 @@ Future _becomeAMemberDialog(context) {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             _dialogActionText(() {
-                              if (_formKey.currentState!.validate()) {
-                                Navigator.pop(context);
-                              }
+                              Navigator.pop(context);
                             }, "Cancel"),
                             _dialogActionText(() {
                               if (_formKey.currentState!.validate()) {
