@@ -3,6 +3,7 @@ import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
+import 'package:energy_of_hco/widgets/showProductDetail.dart';
 import 'package:energy_of_hco/widgets/total_orders.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
-  Categories chosenCategory = Categories.bold;
+  Categories chosenCategory = Categories.bestSelling;
 
   final List<Product> allProducts = [
     Product(
