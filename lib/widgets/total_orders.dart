@@ -19,7 +19,6 @@ class TotalOrders extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 14, horizontal: 10),
                       child: ShowProductDetails(
-                        favouriteIcon: true,
                         title: "John D.",
                         subTitle: "3 items (2 x monster, 1x red bull)",
                         productPrice: "50,32 kr.",
@@ -47,7 +46,7 @@ class ShowProductDetails extends StatelessWidget {
       this.subTitle,
       this.trailing,
       this.productPrice,
-      required this.favouriteIcon,
+      this.favouriteIcon,
       this.optionIcon})
       : super(key: key);
 
@@ -56,7 +55,7 @@ class ShowProductDetails extends StatelessWidget {
   final String? subTitle;
   final String? trailing;
   final String? productPrice;
-  final bool favouriteIcon;
+  final bool? favouriteIcon;
   final IconData? optionIcon;
 
   @override
@@ -94,7 +93,7 @@ class ShowProductDetails extends StatelessWidget {
                       top: 8,
                       child: InkWell(
                         onTap: () {},
-                        child: favouriteIcon
+                        child: favouriteIcon == true
                             ? Icon(
                                 Icons.favorite_border,
                                 color: getAppColorScheme(context).primary,
