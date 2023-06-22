@@ -3,66 +3,52 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-List<DateTime> getWeekDates({required int year, required int weekNumber}) {
-  final DateTime firstDayOfYear = DateTime(year, 1, 1);
-  final int daysOffset = (weekNumber - 1) * 7;
 
-  final DateTime firstDayOfTargetWeek =
-      firstDayOfYear.add(Duration(days: daysOffset));
-  final List<DateTime> weekDates = [];
-
-  for (int i = 0; i < 7; i++) {
-    final DateTime date = firstDayOfTargetWeek.add(Duration(days: i));
-    weekDates.add(date);
-  }
-
-  return weekDates;
-}
 
 class DaysScroll extends StatefulWidget {
-  const DaysScroll({Key? key}) : super(key: key);
+  const DaysScroll({Key? key, required this.initialDate}) : super(key: key);
+  final DateTime initialDate;
 
   @override
   _DaysScrollState createState() => _DaysScrollState();
 }
 
 class _DaysScrollState extends State<DaysScroll> {
-  List<String> listOfMonths = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ]; //List Of Months
 
-  List<String> listOfDays = [
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun"
-  ]; //List of Days
+  late final DateTime _initialDate;
+  late DateTime _selectedDate;
+  @override
+  void initState() {
+    _initialDate = widget.initialDate;
+    _selectedDate = _initialDate;
+    super.initState();
+  }
 
-  DateTime selectedDate = DateTime.now(); // TO tracking date
+  List<DateTime> _getWeekDates({required int year, required int weekNumber}) {
+    final DateTime firstDayOfYear = DateTime(year, 1, 1);
+    final int daysOffset = (weekNumber - 1) * 7;
 
-  int currentDateSelectedIndex = 0; //For Horizontal Date
-  ScrollController scrollController =
+    final DateTime firstDayOfTargetWeek =
+    firstDayOfYear.add(Duration(days: daysOffset));
+    final List<DateTime> weekDates = [];
+
+    for (int i = 0; i < 7; i++) {
+      final DateTime date = firstDayOfTargetWeek.add(Duration(days: i));
+      weekDates.add(date);
+    }
+
+    return weekDates;
+  }
+
+  /// TODO do i need the scroll controler
+  final ScrollController _scrollController =
       ScrollController(); //Scroll Controller for ListView
 
   @override
   Widget build(BuildContext context) {
-    print(getWeekDates(weekNumber: 1, year: 2023));
+    print(_getWeekDates(weekNumber: 1, year: 2023));
     return Container(
-        height: 100,
+        height: 110,
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: 3,
@@ -79,38 +65,37 @@ class _DaysScrollState extends State<DaysScroll> {
                         ),
                     itemCount: 7,
                     padding: EdgeInsets.all(10),
-                    controller: scrollController,
+                    controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int indexDay) {
-                      DateTime currentDate = getWeekDates(
+                      DateTime thisIndexDate = _getWeekDates(
                           weekNumber: indexWeek + 1, year: 2023)[indexDay];
                       return Column(
                         children: [
-                          Text(DateFormat.MMM().format(currentDate)),
+                          Text(DateFormat.MMM().format(thisIndexDate)),
                           InkWell(
                             onTap: () {
                               setState(() {
-                                currentDateSelectedIndex = indexDay;
-                                selectedDate =
-                                    DateTime.now().add(Duration(days: indexDay));
+                                _selectedDate = thisIndexDate;
                               });
                             },
                             child: Container(
-                              padding: EdgeInsets.all(2),
+                              padding: EdgeInsets.all(5),
                               width: MediaQuery.of(context).size.width * 0.11,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: currentDateSelectedIndex == indexDay
+                                  color: _selectedDate == thisIndexDate
                                       ? getAppColorScheme(context).primary
                                       : getAppColorScheme(context).onPrimary),
                               child: Column(
                                 children: [
                                   Text(
-                                    DateFormat.E().format(currentDate),
+                                    DateFormat.E().format(thisIndexDate),
                                     style: TextStyle(
                                         fontSize: 12,
-                                        color: currentDateSelectedIndex ==
-                                                indexDay
+                                        fontWeight: FontWeight.bold,
+                                        color: _selectedDate ==
+                                                thisIndexDate
                                             ? getAppColorScheme(context)
                                                 .onPrimary
                                             : getAppTextTheme(context)
@@ -118,11 +103,12 @@ class _DaysScrollState extends State<DaysScroll> {
                                                 .color),
                                   ),
                                   Text(
-                                    "${currentDate.day}",
+                                    "${thisIndexDate.day}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: currentDateSelectedIndex ==
-                                                indexDay
+                                      fontWeight: FontWeight.bold,
+                                        color: _selectedDate ==
+                                                thisIndexDate
                                             ? getAppColorScheme(context)
                                                 .onPrimary
                                             : getAppTextTheme(context)
@@ -134,7 +120,7 @@ class _DaysScrollState extends State<DaysScroll> {
                             ),
                           ),
                           Text(
-                            DateFormat.y().format(currentDate),
+                            DateFormat.y().format(thisIndexDate),
                             style: getAppTextTheme(context).subtitle1,
                           ),
                         ],
