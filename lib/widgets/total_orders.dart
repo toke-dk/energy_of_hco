@@ -15,7 +15,7 @@ class TotalOrders extends StatelessWidget {
               children: [
                 Container(
                     padding:
-                        const EdgeInsets.symmetric(vertical: 14, horizontal: 7),
+                        const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
                     child: const ShowProductDetails()),
               ],
             );

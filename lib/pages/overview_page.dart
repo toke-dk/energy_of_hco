@@ -21,9 +21,7 @@ class OverView extends StatelessWidget {
                 "Total orders",
                 style: getAppTextTheme(context).headline5,
               )),
-          const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: TotalOrders())
+          TotalOrders()
         ],
       ),
     );
