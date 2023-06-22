@@ -1,3 +1,4 @@
+import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/choose_user.dart';
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
               price: 12.5,
-              brand: Brands.redBull)
+              categories: [Categories.monster])
         ]),
     User(
         firstName: "Flappy",
@@ -77,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
               price: 12.5,
-              brand: Brands.cult)
+              categories: [Categories.bold])
         ])
   ];
 
