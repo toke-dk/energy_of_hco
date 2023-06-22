@@ -82,15 +82,17 @@ class ShowProductDetails extends StatelessWidget {
                           horizontal: 50, vertical: 10),
                       child: productImage),
                   Positioned(
-                      right: 0,
-                      child: IconButton(
-                          onPressed: () {},
-                          icon: favouriteIcon
-                              ? Icon(
-                                  Icons.favorite_border,
-                                  color: getAppColorScheme(context).primary,
-                                )
-                              : const SizedBox()))
+                      right: 8,
+                      top: 8,
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: favouriteIcon
+                            ? Icon(
+                                Icons.favorite_border,
+                                color: getAppColorScheme(context).primary,
+                              )
+                            : const SizedBox(),
+                      ))
                 ],
               ),
             ),
@@ -118,13 +120,15 @@ class ShowProductDetails extends StatelessWidget {
                             style: getAppTextTheme(context).subtitle1,
                           ),
                         ),
-                        trailing != null ? Flexible(
-                          child: Text(
-                            trailing ?? "",
-                            overflow: TextOverflow.ellipsis,
-                            style: getAppTextTheme(context).subtitle1,
-                          ),
-                        ) : SizedBox()
+                        trailing != null
+                            ? Flexible(
+                                child: Text(
+                                  trailing ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: getAppTextTheme(context).subtitle1,
+                                ),
+                              )
+                            : SizedBox()
                       ],
                     ),
                     Row(
