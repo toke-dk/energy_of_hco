@@ -16,7 +16,7 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
-  final Categories chosenCategory = Categories.bestSelling;
+  Categories chosenCategory = Categories.bold;
 
   final List<Product> allProducts = [
     Product(
@@ -64,12 +64,23 @@ class _AddItemsState extends State<AddItems> {
                 "Categories",
                 style: getAppTextTheme(context).headline5,
               ),
-              Placeholder(),
+              _CategoriesHorizontalList(
+                onChange: (newCategories) {
+                  setState(() {
+                    chosenCategory = newCategories;
+                  });
+                },
+                chosenCategory: chosenCategory,
+              ),
               Text(
                 chosenCategory.displayName,
                 style: getAppTextTheme(context).headline5,
               ),
-              ProductsGridView(products: allProducts)
+              _ProductsGridView(
+                  products: allProducts
+                      .where((element) =>
+                          element.categories.contains(chosenCategory))
+                      .toList())
             ],
           ),
         ),
@@ -78,8 +89,71 @@ class _AddItemsState extends State<AddItems> {
   }
 }
 
-class ProductsGridView extends StatelessWidget {
-  const ProductsGridView({Key? key, required this.products}) : super(key: key);
+class _CategoriesHorizontalList extends StatelessWidget {
+  const _CategoriesHorizontalList({Key? key, required this.chosenCategory, required this.onChange})
+      : super(key: key);
+  final Categories chosenCategory;
+  final Function(Categories) onChange;
+
+  List<Color> getButtonColors(Categories currentIndexCategories, context) {
+    // the first item is the background
+    // the second is the textcolor
+    if (currentIndexCategories == chosenCategory) {
+      return [
+        getAppColorScheme(context).primary,
+        getAppColorScheme(context).onPrimary
+      ];
+    }
+    return [
+      getAppColorScheme(context).onPrimary,
+      getAppTextTheme(context).bodyText2!.color!
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: ListView.separated(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            Categories currentIndexCategories = Categories.values[index];
+            return GestureDetector(
+              onTap: () => onChange(currentIndexCategories),
+              child: Container(
+                padding: EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: getButtonColors(currentIndexCategories, context)[0],
+                ),
+                alignment: Alignment.center,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Text(
+                    currentIndexCategories.displayName,
+                    style: TextStyle(
+                        color:
+                            getButtonColors(currentIndexCategories, context)[1],
+                        fontWeight: currentIndexCategories == chosenCategory
+                            ? FontWeight.bold
+                            : null),
+                  ),
+                ),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => const SizedBox(
+                width: 8,
+              ),
+          itemCount: Categories.values.length),
+    );
+  }
+}
+
+class _ProductsGridView extends StatelessWidget {
+  const _ProductsGridView({Key? key, required this.products}) : super(key: key);
 
   final List<Product> products;
 
