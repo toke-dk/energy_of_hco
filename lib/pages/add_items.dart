@@ -8,7 +8,12 @@ class AddItems extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add items"),
-        actions: [IconButton(icon: Icon(Icons.shopping_basket), onPressed: () {  },)],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_basket),
+            onPressed: () {},
+          )
+        ],
       ),
     );
   }

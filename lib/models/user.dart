@@ -11,7 +11,7 @@ class User {
       required this.lastName,
       required this.energyPoints,
       required this.favouriteProducts});
-  
+
   String get generateFullName => "$firstName $lastName";
 
   String get energyPointsAsString => energyPoints.toString();

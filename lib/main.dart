@@ -22,17 +22,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           textTheme: TextTheme(
               headline1:
-              TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
+                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
               headline2:
-              TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
+                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
               headline3:
-              TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
+                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
               headline4:
-              TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
+                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
               headline5:
-              TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
+                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
               headline6:
-              TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
+                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
               bodyText1: const TextStyle(
                   fontWeight: FontWeight.bold, color: Colors.black),
               bodyText2: const TextStyle(color: Colors.black),
@@ -54,25 +54,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final List<User> users = [
-    User(firstName: "John",
+    User(
+        firstName: "John",
         lastName: "Doe",
         energyPoints: 103,
         favouriteProducts: [
-          Product(name: "Monster",
+          Product(
+              name: "Monster",
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-              price: 12.5, brand: Brands.redBull)
+              price: 12.5,
+              brand: Brands.redBull)
         ]),
-    User(firstName: "Flappy",
+    User(
+        firstName: "Flappy",
         lastName: "Bird",
         energyPoints: 243,
         favouriteProducts: [
-          Product(name: "Bold super duper",
+          Product(
+              name: "Bold super duper",
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-              price: 12.5, brand: Brands.cult)
+              price: 12.5,
+              brand: Brands.cult)
         ])
   ];
 
@@ -81,11 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () =>
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChooseUser(allUsers: users))),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChooseUser(allUsers: users))),
       ),
       appBar: AppBar(
         title: Text(

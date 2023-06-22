@@ -14,4 +14,4 @@ class Product {
   });
 }
 
-enum Brands {monster, bold, cult, faxeKondi, redBull}
+enum Brands { monster, bold, cult, faxeKondi, redBull }
