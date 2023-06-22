@@ -14,9 +14,17 @@ class TotalOrders extends StatelessWidget {
             return Column(
               children: [
                 Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                    child: const ShowProductDetails()),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 10),
+                    child: ShowProductDetails(
+                      favouriteIcon: true,
+                      title: "John D.",
+                      subTitle: "3 items (2 x monster, 1x red bull)",
+                      productPrice: "50,32 kr.",
+                      optionIcon: Icons.edit,
+                      productImage: Image.network(
+                          'https://cdn.bevco.dk/cdn-cgi/image/format%3Dauto/https%3A//cdn.bevco.dk/thumbnail/d3/15/55/1644401459/monster-energy-24x50-cl-daase-449cc_644x644.png'),
+                    )),
               ],
             );
           },
@@ -29,7 +37,24 @@ class TotalOrders extends StatelessWidget {
 }
 
 class ShowProductDetails extends StatelessWidget {
-  const ShowProductDetails({Key? key}) : super(key: key);
+  const ShowProductDetails(
+      {Key? key,
+      required this.productImage,
+      this.title,
+      this.subTitle,
+      this.trailing,
+      this.productPrice,
+      required this.favouriteIcon,
+      this.optionIcon})
+      : super(key: key);
+
+  final Widget productImage;
+  final String? title;
+  final String? subTitle;
+  final String? trailing;
+  final String? productPrice;
+  final bool favouriteIcon;
+  final IconData? optionIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +74,20 @@ class ShowProductDetails extends StatelessWidget {
               height: 90,
               child: Stack(
                 children: [
-                  const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                      child: Placeholder()),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 10),
+                      child: productImage),
                   Positioned(
                       right: 0,
                       child: IconButton(
                           onPressed: () {},
-                          icon: Icon(
-                            Icons.favorite_border,
-                            color: getAppColorScheme(context).primary,
-                          )))
+                          icon: favouriteIcon
+                              ? Icon(
+                                  Icons.favorite_border,
+                                  color: getAppColorScheme(context).primary,
+                                )
+                              : const SizedBox()))
                 ],
               ),
             ),
@@ -71,35 +98,44 @@ class ShowProductDetails extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Title",
-                      style: TextStyle(fontSize: 16),
+                    Flexible(
+                      child: Text(
+                        title ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Subtitle",
-                          style: getAppTextTheme(context).subtitle1,
+                        Expanded(
+                          child: Text(
+                            subTitle ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            style: getAppTextTheme(context).subtitle1,
+                          ),
                         ),
-                        Text(
-                          "Trailing",
-                          style: getAppTextTheme(context).subtitle1,
-                        )
+                        trailing != null ? Flexible(
+                          child: Text(
+                            trailing ?? "",
+                            overflow: TextOverflow.ellipsis,
+                            style: getAppTextTheme(context).subtitle1,
+                          ),
+                        ) : SizedBox()
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "xy,zz kr.",
+                          productPrice ?? "",
                           style: TextStyle(
                               color: getAppColorScheme(context).primary,
                               fontWeight: FontWeight.bold),
                         ),
                         GestureDetector(
                           child: Icon(
-                            Icons.visibility,
+                            optionIcon,
                             size: 20,
                             color: getAppColorScheme(context).primary,
                           ),
