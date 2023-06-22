@@ -86,18 +86,18 @@ class ChooseUser extends StatelessWidget {
                           ),
                         ))
                       ],
-                      rows: allUsers.map((e) {
-                        print(e.firstName);
+                      rows: allUsers.map((user) {
+                        print(user.firstName);
                         return DataRow(
                             onSelectChanged: (_) {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const AddItems()));
+                                      builder: (context) => AddItems(user: user,)));
                             },
                             cells: [
-                              DataCell(Text(e.generateFullName)),
-                              DataCell(Text(e.energyPointsAsString))
+                              DataCell(Text(user.generateFullName)),
+                              DataCell(Text(user.energyPointsAsString))
                             ]);
                       }).toList()),
                 ),

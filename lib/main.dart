@@ -55,6 +55,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // TODO these should come from the db of course
   final List<User> users = [
     User(
         firstName: "John",
@@ -65,8 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
               name: "Monster",
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-              price: 12.5,
-              categories: [Categories.monster])
+              priceInDKK: 12.5,
+              categories: [Categories.monster],
+              sizeInCL: 25)
         ]),
     User(
         firstName: "Flappy",
@@ -77,8 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
               name: "Bold super duper",
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-              price: 12.5,
-              categories: [Categories.bold])
+              priceInDKK: 12.5,
+              categories: [Categories.bold],
+              sizeInCL: 26)
         ])
   ];
 
