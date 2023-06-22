@@ -21,7 +21,7 @@ class OverView extends StatelessWidget {
                 "Total orders",
                 style: getAppTextTheme(context).headline5,
               )),
-          TotalOrders()
+          const TotalOrders()
         ],
       ),
     );

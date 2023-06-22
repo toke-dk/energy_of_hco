@@ -8,7 +8,8 @@ class MyPaper extends StatelessWidget {
     this.width,
     this.height,
     this.hasShadow = false,
-    this.onTap, this.padding,
+    this.onTap,
+    this.padding,
   }) : super(key: key);
 
   final Widget? child;
@@ -27,13 +28,13 @@ class MyPaper extends StatelessWidget {
         color: getAppColorScheme(context).onPrimary,
         boxShadow: hasShadow
             ? [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 6,
-            blurRadius: 4,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ]
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 6,
+                  blurRadius: 4,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ]
             : null,
       ),
       child: GestureDetector(onTap: onTap, child: child),

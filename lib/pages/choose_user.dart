@@ -11,34 +11,41 @@ class ChooseUser extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Choose user"),
+          title: const Text("Choose user"),
         ),
         body: Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: MyPaper(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              width: MediaQuery.of(context).size.width*1,
+              padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              width: MediaQuery.of(context).size.width * 1,
               child: DataTable(
-                showCheckboxColumn: false,
-                  columns: const [
+                  showCheckboxColumn: false,
+                  columns: [
                     DataColumn(
                         label: Expanded(
-                      child: Text("Name"),
+                      child: Text(
+                        "Name",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: getAppColorScheme(context).primary),
+                      ),
                     )),
                     DataColumn(
                         label: Expanded(
-                      child: Text("Energy points"),
+                      child: Text(
+                        "Energy points",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: getAppColorScheme(context).primary),
+                      ),
                     ))
                   ],
                   rows: allUsers
-                      .map((e) => DataRow(
-                              onSelectChanged: (_) {
-                              },
-                              cells: [
-                                DataCell(Text(e["name"])),
-                                DataCell(Text(e["ep"].toString()))
-                              ]))
+                      .map((e) => DataRow(onSelectChanged: (_) {}, cells: [
+                            DataCell(Text(e["name"])),
+                            DataCell(Text(e["ep"].toString()))
+                          ]))
                       .toList()),
             )));
   }
