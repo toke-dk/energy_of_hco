@@ -1,3 +1,4 @@
+import 'package:energy_of_hco/pages/choose_user.dart';
 import 'package:energy_of_hco/pages/overview_page.dart';
 import 'package:energy_of_hco/palette.dart';
 import 'package:flutter/material.dart';
@@ -54,18 +55,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const ChooseUser(allUsers: [
+                      {"name": "Myname", "ep": 5}
+                    ]))),
+      ),
       appBar: AppBar(
         title: Text(
           widget.title,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget>[OverView()],
-          ),
-        ),
+      body: const SingleChildScrollView(
+        child: OverView(),
       ),
     );
   }
