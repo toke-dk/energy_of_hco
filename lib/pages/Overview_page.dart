@@ -9,7 +9,7 @@ class OverView extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          DaysScroll(initialDate: DateTime(2023,1,3),)
+          DaysScroll(initialDate: DateTime.now(),)
         ],
       ),
     );

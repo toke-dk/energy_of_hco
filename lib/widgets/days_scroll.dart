@@ -2,8 +2,7 @@ import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class DaysScroll extends StatefulWidget {
   const DaysScroll({Key? key, required this.initialDate}) : super(key: key);
@@ -14,22 +13,23 @@ class DaysScroll extends StatefulWidget {
 }
 
 class _DaysScrollState extends State<DaysScroll> {
-
   late final DateTime _initialDate;
   late DateTime _selectedDate;
+
   @override
   void initState() {
     _initialDate = widget.initialDate;
+
     _selectedDate = _initialDate;
     super.initState();
   }
 
   List<DateTime> _getWeekDates({required int year, required int weekNumber}) {
-    final DateTime firstDayOfYear = DateTime(year, 1, 1);
+    final DateTime firstDayOfYear = _getFirstMondayOfYear(year);
     final int daysOffset = (weekNumber - 1) * 7;
 
     final DateTime firstDayOfTargetWeek =
-    firstDayOfYear.add(Duration(days: daysOffset));
+        firstDayOfYear.add(Duration(days: daysOffset));
     final List<DateTime> weekDates = [];
 
     for (int i = 0; i < 7; i++) {
@@ -40,18 +40,39 @@ class _DaysScrollState extends State<DaysScroll> {
     return weekDates;
   }
 
-  /// TODO do i need the scroll controler
-  final ScrollController _scrollController =
-      ScrollController(); //Scroll Controller for ListView
+  DateTime _getFirstMondayOfYear(int year) {
+    DateTime date = DateTime(year, 1, 1);
+    while (date.weekday != DateTime.monday) {
+      date = date.add(Duration(days: 1));
+    }
+    return date;
+  }
+
+  int _getWeekNumberFromDate(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    return ((dayOfYear - date.weekday + 10) / 7).floor();
+  }
+
+  /// TODO make this a smarter way for example via a class or just change the textcolor in texttheme
+  Map<String, Color> _colorsFromDateDifference(
+      DateTime firstDate, DateTime secondDate) {
+    Color buttonColor = firstDate.isSameDate(secondDate)
+        ? getAppColorScheme(context).primary
+        : getAppColorScheme(context).onPrimary;
+    Color textColor = firstDate.isSameDate(secondDate)
+        ? getAppColorScheme(context).onPrimary
+        : getAppTextTheme(context).bodyText1!.color!;
+    return {"button": buttonColor, "text": textColor};
+  }
 
   @override
   Widget build(BuildContext context) {
-    print(_getWeekDates(weekNumber: 1, year: 2023));
     return Container(
         height: 110,
-        child: ListView.builder(
+        child: ScrollablePositionedList.builder(
+          initialScrollIndex: _getWeekNumberFromDate(_initialDate),
           shrinkWrap: true,
-          itemCount: 3,
+          itemCount: 52,
           scrollDirection: Axis.horizontal,
           physics: const PageScrollPhysics(),
           itemBuilder: (context, indexWeek) {
@@ -65,11 +86,11 @@ class _DaysScrollState extends State<DaysScroll> {
                         ),
                     itemCount: 7,
                     padding: EdgeInsets.all(10),
-                    controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int indexDay) {
                       DateTime thisIndexDate = _getWeekDates(
-                          weekNumber: indexWeek + 1, year: 2023)[indexDay];
+                          weekNumber: indexWeek,
+                          year: _initialDate.year)[indexDay];
                       return Column(
                         children: [
                           Text(DateFormat.MMM().format(thisIndexDate)),
@@ -84,9 +105,8 @@ class _DaysScrollState extends State<DaysScroll> {
                               width: MediaQuery.of(context).size.width * 0.11,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: _selectedDate == thisIndexDate
-                                      ? getAppColorScheme(context).primary
-                                      : getAppColorScheme(context).onPrimary),
+                                  color: _colorsFromDateDifference(
+                                      _selectedDate, thisIndexDate)["button"]),
                               child: Column(
                                 children: [
                                   Text(
@@ -94,26 +114,18 @@ class _DaysScrollState extends State<DaysScroll> {
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: _selectedDate ==
-                                                thisIndexDate
-                                            ? getAppColorScheme(context)
-                                                .onPrimary
-                                            : getAppTextTheme(context)
-                                                .bodyText1!
-                                                .color),
+                                        color: _colorsFromDateDifference(
+                                            _selectedDate,
+                                            thisIndexDate)["text"]),
                                   ),
                                   Text(
                                     "${thisIndexDate.day}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                        color: _selectedDate ==
-                                                thisIndexDate
-                                            ? getAppColorScheme(context)
-                                                .onPrimary
-                                            : getAppTextTheme(context)
-                                                .bodyText1!
-                                                .color),
+                                        fontWeight: FontWeight.bold,
+                                        color: _colorsFromDateDifference(
+                                            _selectedDate,
+                                            thisIndexDate)["text"]),
                                   ),
                                 ],
                               ),
@@ -130,6 +142,12 @@ class _DaysScrollState extends State<DaysScroll> {
             );
           },
         ));
+  }
+}
+
+extension DateOnlyCompare on DateTime {
+  bool isSameDate(DateTime other) {
+    return day == other.day && year == other.year && month == other.month;
   }
 }
 
