@@ -16,12 +16,12 @@ class OverView extends StatelessWidget {
             initialDate: DateTime.now(),
           ),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
               child: Text(
                 "Total orders",
                 style: getAppTextTheme(context).headline5,
               )),
-          Padding(
+          const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: TotalOrders())
         ],

@@ -1,5 +1,4 @@
-import 'package:energy_of_hco/helpers/app_theme_helper.dart';
-import 'package:energy_of_hco/pages/Overview_page.dart';
+import 'package:energy_of_hco/pages/overview_page.dart';
 import 'package:energy_of_hco/palette.dart';
 import 'package:flutter/material.dart';
 
@@ -64,9 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              OverView()
-            ],
+            children: const <Widget>[OverView()],
           ),
         ),
       ),
