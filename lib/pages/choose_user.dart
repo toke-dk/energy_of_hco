@@ -1,4 +1,5 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/add_items.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 class ChooseUser extends StatelessWidget {
   const ChooseUser({Key? key, required this.allUsers}) : super(key: key);
 
-  final List<Map<String, dynamic>> allUsers;
+  final List<User> allUsers;
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,10 @@ class ChooseUser extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   borderRadius: 30,
                   hasShadow: true,
+
                   ///Todo do something with this value
-                  onTap: () => _becomeAMemberDialog(context).then((value) => print("value: $value")),
+                  onTap: () => _becomeAMemberDialog(context)
+                      .then((value) => print("value: $value")),
                   child: Row(
                     children: [
                       const SizedBox(
@@ -82,12 +85,20 @@ class ChooseUser extends StatelessWidget {
                           ),
                         ))
                       ],
-                      rows: allUsers
-                          .map((e) => DataRow(onSelectChanged: (_) {Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddItems()));}, cells: [
-                                DataCell(Text(e["name"])),
-                                DataCell(Text(e["ep"].toString()))
-                              ]))
-                          .toList()),
+                      rows: allUsers.map((e) {
+                        print(e.firstName);
+                        return DataRow(
+                            onSelectChanged: (_) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const AddItems()));
+                            },
+                            cells: [
+                              DataCell(Text(e.generateFullName)),
+                              DataCell(Text(e.energyPointsAsString))
+                            ]);
+                      }).toList()),
                 ),
               ],
             )));
@@ -190,7 +201,7 @@ Future _becomeAMemberDialog(context) {
                             }, "Cancel"),
                             _dialogActionText(() {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.pop(context, [firstName,lastName]);
+                                Navigator.pop(context, [firstName, lastName]);
                               }
                             }, "Add !"),
                           ],
