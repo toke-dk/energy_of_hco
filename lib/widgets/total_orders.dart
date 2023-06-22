@@ -73,18 +73,26 @@ class ShowProductDetails extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-              height: 90,
+            AspectRatio(
+              aspectRatio: 100/50,
               child: Stack(
                 children: [
                   Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 10),
-                      child: productImage),
+                    padding: EdgeInsets.all(10),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: SizedBox.expand(
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: productImage,
+                        ),
+                      ),
+                    ),
+                  ),
                   Positioned(
                       right: 8,
                       top: 8,
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: () {},
                         child: favouriteIcon
                             ? Icon(
@@ -103,7 +111,8 @@ class ShowProductDetails extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
+                    FittedBox(
+                      fit: BoxFit.fitWidth,
                       child: Text(
                         title ?? "",
                         overflow: TextOverflow.ellipsis,
@@ -134,19 +143,25 @@ class ShowProductDetails extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          productPrice ?? "",
-                          style: TextStyle(
-                              color: getAppColorScheme(context).primary,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        GestureDetector(
-                          child: Icon(
-                            optionIcon,
-                            size: 20,
-                            color: getAppColorScheme(context).primary,
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            productPrice ?? "",
+                            style: TextStyle(
+                                color: getAppColorScheme(context).primary,
+                                fontWeight: FontWeight.bold),
                           ),
-                          onTap: () {},
+                        ),
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: InkWell(
+                            child: Icon(
+                              optionIcon,
+                              size: 20,
+                              color: getAppColorScheme(context).primary,
+                            ),
+                            onTap: () {},
+                          ),
                         ),
                       ],
                     ),
