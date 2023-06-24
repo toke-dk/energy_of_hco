@@ -1,4 +1,5 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,8 @@ class ShowProductDetails extends StatelessWidget {
       this.favouriteIcon,
       this.optionIcon,
       this.isFavourite,
-      this.onFavouriteChange})
+      this.onFavouriteChange,
+      this.onOptionIconTap})
       : super(key: key);
 
   final Widget productImage;
@@ -25,6 +27,7 @@ class ShowProductDetails extends StatelessWidget {
   final bool? isFavourite;
   final Function(bool)? onFavouriteChange;
   final IconData? optionIcon;
+  final Function()? onOptionIconTap;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +135,7 @@ class ShowProductDetails extends StatelessWidget {
                               size: 20,
                               color: getAppColorScheme(context).primary,
                             ),
-                            onTap: () {},
+                            onTap: onOptionIconTap,
                           ),
                         ),
                       ],

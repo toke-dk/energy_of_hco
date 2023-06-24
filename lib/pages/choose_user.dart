@@ -1,4 +1,5 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/models/cart.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/add_items.dart';
@@ -31,7 +32,6 @@ class _ChooseUserState extends State<ChooseUser> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -130,6 +130,9 @@ class _ChooseUserState extends State<ChooseUser> {
                                         ChangeNotifierProvider(
                                             create: (BuildContext context) =>
                                                 ProductsNotifier()),
+                                        ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                CartProvider())
                                       ],
                                       child: AddItems(
                                         user: user,

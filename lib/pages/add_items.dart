@@ -1,4 +1,5 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/models/cart.dart';
 import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
@@ -23,10 +24,16 @@ class _AddItemsState extends State<AddItems> {
 
   @override
   void initState() {
-    allProducts = Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
+    allProducts =
+        Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
     favouriteItems =
-        Provider.of<FavouriteProductsNotifier>(context, listen: false).getFavouriteProducts;
+        Provider.of<FavouriteProductsNotifier>(context, listen: false)
+            .getFavouriteProducts;
     super.initState();
+  }
+
+  int getCarLength(context) {
+    return Provider.of<CartProvider>(context, listen: true).length;
   }
 
   TopCategories chosenTopCategory = TopCategories.all;
@@ -66,14 +73,33 @@ class _AddItemsState extends State<AddItems> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add items"),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_basket),
-            onPressed: () {},
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_basket),
+                onPressed: () {},
+              ),
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight: 15,
+                    maxWidth: 15,
+                    minHeight: 15,
+                    minWidth: 15,
+                  ),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                  child: FittedBox(fit: BoxFit.contain,child: Text(getCarLength(context).toString(),)),
+                ),
+              ),
+
+            ],
           ),
         ],
       ),
@@ -115,7 +141,8 @@ class _AddItemsState extends State<AddItems> {
                 style: getAppTextTheme(context).headline5,
               ),
               _ProductsGridView(
-                products: _getProductsToShow(chosenTopCategory, chosenBrands, context),
+                products: _getProductsToShow(
+                    chosenTopCategory, chosenBrands, context),
                 onFavouriteChange: (Product product, bool value) {
                   if (!value) {
                     setState(() {
@@ -131,7 +158,20 @@ class _AddItemsState extends State<AddItems> {
                     });
                   }
                 },
+
+                ///TODO get this mess to look a bit nicer
                 favouriteProducts: favouriteItems,
+                onAddToCart: (Product product) {
+                  if (!Provider.of<CartProvider>(context, listen: false)
+                      .getItems
+                      .map((e) => e.product)
+                      .contains(product)) {
+                    setState(() {
+                      Provider.of<CartProvider>(context, listen: false)
+                          .addItem(CartItem(amount: 1, product: product));
+                    });
+                  }
+                },
               )
             ],
           ),
@@ -247,12 +287,14 @@ class _ProductsGridView extends StatelessWidget {
       {Key? key,
       required this.products,
       required this.onFavouriteChange,
-      required this.favouriteProducts})
+      required this.favouriteProducts,
+      required this.onAddToCart})
       : super(key: key);
 
   final List<Product> products;
   final Function(Product product, bool value) onFavouriteChange;
   final List<Product> favouriteProducts;
+  final Function(Product) onAddToCart;
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +307,7 @@ class _ProductsGridView extends StatelessWidget {
           (index) => Padding(
               padding: EdgeInsets.all(10),
               child: ShowProductDetails(
+                  onOptionIconTap: () => onAddToCart(products[index]),
                   onFavouriteChange: (value) =>
                       onFavouriteChange(products[index], value),
                   isFavourite: favouriteProducts.contains(products[index]),
