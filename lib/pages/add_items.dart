@@ -87,7 +87,7 @@ class _AddItemsState extends State<AddItems> {
             children: [
               Text(
                 "Categories",
-                style: getAppTextTheme(context).headline5,
+                style: getAppTextTheme(context).headline6,
               ),
               MyHorizontalListView(
                 onChange: (newCategory) {
@@ -109,6 +109,7 @@ class _AddItemsState extends State<AddItems> {
                 chosenItems: chosenBrands,
                 allItems: Brands.values,
                 allTitles: Brands.values.map((e) => e.displayName).toList(),
+                scaleFactor: 0.8,
               ),
               Text(
                 chosenTopCategory.displayName,
@@ -131,12 +132,14 @@ class MyHorizontalListView extends StatelessWidget {
       required this.chosenItems,
       required this.onChange,
       required this.allItems,
-      required this.allTitles})
+      required this.allTitles,
+      this.scaleFactor})
       : super(key: key);
   final List<dynamic> chosenItems;
   final List<dynamic> allItems;
   final Function(dynamic) onChange;
   final List<String> allTitles;
+  final double? scaleFactor;
 
   List<Color> _getButtonColors(dynamic currentIndexCategories, context) {
     // the first item is the background
@@ -155,38 +158,43 @@ class MyHorizontalListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            dynamic currentIndexBrand = allItems[index];
-            return GestureDetector(
-              onTap: () => onChange(currentIndexBrand),
-              child: Container(
-                padding: EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: _getButtonColors(currentIndexBrand, context)[0],
-                ),
-                alignment: Alignment.center,
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                child: FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: Text(
-                    allTitles[index],
-                    style: TextStyle(
-                        color: _getButtonColors(currentIndexBrand, context)[1]),
+    return Transform.scale(
+      alignment: Alignment.centerLeft,
+      scale: scaleFactor ?? 1,
+      child: SizedBox(
+        height: 50,
+        child: ListView.separated(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              dynamic currentIndexBrand = allItems[index];
+              return GestureDetector(
+                onTap: () => onChange(currentIndexBrand),
+                child: Container(
+                  padding: EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: _getButtonColors(currentIndexBrand, context)[0],
+                  ),
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Text(
+                      allTitles[index],
+                      style: TextStyle(
+                          color:
+                              _getButtonColors(currentIndexBrand, context)[1]),
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(
-                width: 8,
-              ),
-          itemCount: allItems.length),
+              );
+            },
+            separatorBuilder: (context, index) => SizedBox(
+                  width: 8,
+                ),
+            itemCount: allItems.length),
+      ),
     );
   }
 }
