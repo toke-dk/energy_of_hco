@@ -21,8 +21,9 @@ class _AddItemsState extends State<AddItems> {
 
   List<Brands> _onBrandsClickChange(Brands clickedBrand) {
     List<Brands> newChosenBrands = chosenBrands;
-    newChosenBrands.contains(clickedBrand) ? newChosenBrands.remove(
-        clickedBrand) : newChosenBrands.add(clickedBrand);
+    newChosenBrands.contains(clickedBrand)
+        ? newChosenBrands.remove(clickedBrand)
+        : newChosenBrands.add(clickedBrand);
     return newChosenBrands;
   }
 
@@ -89,19 +90,32 @@ class _AddItemsState extends State<AddItems> {
                 style: getAppTextTheme(context).headline5,
               ),
               _CategoriesHorizontalList(
-                onChange: (Brands newBrand) {
+                onChange: (newCategory) {
+                  setState(() {
+                    chosenTopCategory = newCategory;
+                  });
+                },
+                chosenBrands: [chosenTopCategory],
+                allBrands: TopCategories.values,
+                allTitles:
+                    TopCategories.values.map((e) => e.displayName).toList(),
+              ),
+              _CategoriesHorizontalList(
+                onChange: (newBrand) {
                   setState(() {
                     chosenBrands = _onBrandsClickChange(newBrand);
                   });
                 },
-                chosenBrands: chosenBrands, allBrands: Brands.values,
+                chosenBrands: chosenBrands,
+                allBrands: Brands.values,
+                allTitles: Brands.values.map((e) => e.displayName).toList(),
               ),
               Text(
                 chosenTopCategory.displayName,
                 style: getAppTextTheme(context).headline5,
               ),
               _ProductsGridView(
-                  products: [],
+                products: [],
               )
             ],
           ),
@@ -113,13 +127,18 @@ class _AddItemsState extends State<AddItems> {
 
 class _CategoriesHorizontalList extends StatelessWidget {
   const _CategoriesHorizontalList(
-      {Key? key, required this.chosenBrands, required this.onChange, required this.allBrands})
+      {Key? key,
+      required this.chosenBrands,
+      required this.onChange,
+      required this.allBrands,
+      required this.allTitles})
       : super(key: key);
-  final List<Brands> chosenBrands;
-  final List<Brands> allBrands;
-  final Function(Brands) onChange;
+  final List<dynamic> chosenBrands;
+  final List<dynamic> allBrands;
+  final Function(dynamic) onChange;
+  final List<String> allTitles;
 
-  List<Color> getButtonColors(Brands currentIndexCategories, context) {
+  List<Color> _getButtonColors(dynamic currentIndexCategories, context) {
     // the first item is the background
     // the second is the textcolor
     if (chosenBrands.contains(currentIndexCategories)) {
@@ -142,36 +161,31 @@ class _CategoriesHorizontalList extends StatelessWidget {
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            Brands currentIndexBrand = Brands.values[index];
+            dynamic currentIndexBrand = allBrands[index];
             return GestureDetector(
               onTap: () => onChange(currentIndexBrand),
               child: Container(
                 padding: EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: getButtonColors(currentIndexBrand, context)[0],
+                  color: _getButtonColors(currentIndexBrand, context)[0],
                 ),
                 alignment: Alignment.center,
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: FittedBox(
                   fit: BoxFit.fitHeight,
                   child: Text(
-                    currentIndexBrand.displayName,
+                    allTitles[index],
                     style: TextStyle(
-                        color:
-                        getButtonColors(currentIndexBrand, context)[1],
-                        fontWeight: currentIndexBrand == chosenBrands
-                            ? FontWeight.bold
-                            : null),
+                        color: _getButtonColors(currentIndexBrand, context)[1]),
                   ),
                 ),
               ),
             );
           },
-          separatorBuilder: (context, index) =>
-          const SizedBox(
-            width: 8,
-          ),
+          separatorBuilder: (context, index) => const SizedBox(
+                width: 8,
+              ),
           itemCount: allBrands.length),
     );
   }
@@ -190,16 +204,15 @@ class _ProductsGridView extends StatelessWidget {
       crossAxisCount: 2,
       children: List.generate(
           products.length,
-              (index) =>
-              Padding(
-                  padding: EdgeInsets.all(10),
-                  child: ShowProductDetails(
-                      subTitle: products[index].sizeInCL.toString(),
-                      productPrice: products[index].priceInDKK.toString(),
-                      optionIcon: Icons.add_shopping_cart_outlined,
-                      title: products[index].name,
-                      productImage: products[index].image,
-                      favouriteIcon: true))),
+          (index) => Padding(
+              padding: EdgeInsets.all(10),
+              child: ShowProductDetails(
+                  subTitle: products[index].sizeInCL.toString(),
+                  productPrice: products[index].priceInDKK.toString(),
+                  optionIcon: Icons.add_shopping_cart_outlined,
+                  title: products[index].name,
+                  productImage: products[index].image,
+                  favouriteIcon: true))),
     );
   }
 }
