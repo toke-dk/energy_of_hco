@@ -89,25 +89,25 @@ class _AddItemsState extends State<AddItems> {
                 "Categories",
                 style: getAppTextTheme(context).headline5,
               ),
-              _CategoriesHorizontalList(
+              MyHorizontalListView(
                 onChange: (newCategory) {
                   setState(() {
                     chosenTopCategory = newCategory;
                   });
                 },
-                chosenBrands: [chosenTopCategory],
-                allBrands: TopCategories.values,
+                chosenItems: [chosenTopCategory],
+                allItems: TopCategories.values,
                 allTitles:
                     TopCategories.values.map((e) => e.displayName).toList(),
               ),
-              _CategoriesHorizontalList(
+              MyHorizontalListView(
                 onChange: (newBrand) {
                   setState(() {
                     chosenBrands = _onBrandsClickChange(newBrand);
                   });
                 },
-                chosenBrands: chosenBrands,
-                allBrands: Brands.values,
+                chosenItems: chosenBrands,
+                allItems: Brands.values,
                 allTitles: Brands.values.map((e) => e.displayName).toList(),
               ),
               Text(
@@ -125,23 +125,23 @@ class _AddItemsState extends State<AddItems> {
   }
 }
 
-class _CategoriesHorizontalList extends StatelessWidget {
-  const _CategoriesHorizontalList(
+class MyHorizontalListView extends StatelessWidget {
+  const MyHorizontalListView(
       {Key? key,
-      required this.chosenBrands,
+      required this.chosenItems,
       required this.onChange,
-      required this.allBrands,
+      required this.allItems,
       required this.allTitles})
       : super(key: key);
-  final List<dynamic> chosenBrands;
-  final List<dynamic> allBrands;
+  final List<dynamic> chosenItems;
+  final List<dynamic> allItems;
   final Function(dynamic) onChange;
   final List<String> allTitles;
 
   List<Color> _getButtonColors(dynamic currentIndexCategories, context) {
     // the first item is the background
     // the second is the textcolor
-    if (chosenBrands.contains(currentIndexCategories)) {
+    if (chosenItems.contains(currentIndexCategories)) {
       return [
         getAppColorScheme(context).primary,
         getAppColorScheme(context).onPrimary
@@ -161,7 +161,7 @@ class _CategoriesHorizontalList extends StatelessWidget {
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            dynamic currentIndexBrand = allBrands[index];
+            dynamic currentIndexBrand = allItems[index];
             return GestureDetector(
               onTap: () => onChange(currentIndexBrand),
               child: Container(
@@ -186,7 +186,7 @@ class _CategoriesHorizontalList extends StatelessWidget {
           separatorBuilder: (context, index) => const SizedBox(
                 width: 8,
               ),
-          itemCount: allBrands.length),
+          itemCount: allItems.length),
     );
   }
 }
