@@ -17,25 +17,48 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
-  Categories chosenCategory = Categories.bestSelling;
+  TopCategories chosenTopCategory = TopCategories.all;
+
+  List<Brands> _onBrandsClickChange(Brands clickedBrand) {
+    List<Brands> newChosenBrands = chosenBrands;
+    newChosenBrands.contains(clickedBrand) ? newChosenBrands.remove(
+        clickedBrand) : newChosenBrands.add(clickedBrand);
+    return newChosenBrands;
+  }
+
+  List<Brands> chosenBrands = [];
 
   final List<Product> allProducts = [
     Product(
-        categories: [Categories.bold, Categories.favourites],
+        name: "Monster top rank",
+        image: Image.network(
+            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+        priceInDKK: 12.5,
+        brand: Brands.monster,
+        sizeInCL: 25),
+    Product(
+        name: "Bold super duper ultra omega",
+        image: Image.network(
+            "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
+        priceInDKK: 12.5,
+        brand: Brands.bold,
+        sizeInCL: 26),
+    Product(
+        brand: Brands.bold,
         name: "Bold Iced Espresso",
         image: Image.network(
             "https://shop14539.sfstatic.io/upload_dir/shop/_thumbs/Bold_Iced_Espresso.w610.h610.fill.png"),
         priceInDKK: 19.9,
         sizeInCL: 25),
     Product(
-        categories: [Categories.monster, Categories.bestSelling],
+        brand: Brands.monster,
         name: "Monster Energy",
         image: Image.network(
             "https://www.pngplay.com/wp-content/uploads/9/Monster-Energy-Transparent-PNG.png"),
         priceInDKK: 12.5,
         sizeInCL: 25),
     Product(
-        categories: [Categories.monster, Categories.bestSelling],
+        brand: Brands.monster,
         name: "Monster Energy Ireland",
         image: Image.network(
             "https://cdn.shopify.com/s/files/1/0080/7282/2839/products/ultraparadise.png?v=1664660445"),
@@ -66,22 +89,20 @@ class _AddItemsState extends State<AddItems> {
                 style: getAppTextTheme(context).headline5,
               ),
               _CategoriesHorizontalList(
-                onChange: (newCategories) {
+                onChange: (Brands newBrand) {
                   setState(() {
-                    chosenCategory = newCategories;
+                    chosenBrands = _onBrandsClickChange(newBrand);
                   });
                 },
-                chosenCategory: chosenCategory,
+                chosenBrands: chosenBrands, allBrands: Brands.values,
               ),
               Text(
-                chosenCategory.displayName,
+                chosenTopCategory.displayName,
                 style: getAppTextTheme(context).headline5,
               ),
               _ProductsGridView(
-                  products: allProducts
-                      .where((element) =>
-                          element.categories.contains(chosenCategory))
-                      .toList())
+                  products: [],
+              )
             ],
           ),
         ),
@@ -91,15 +112,17 @@ class _AddItemsState extends State<AddItems> {
 }
 
 class _CategoriesHorizontalList extends StatelessWidget {
-  const _CategoriesHorizontalList({Key? key, required this.chosenCategory, required this.onChange})
+  const _CategoriesHorizontalList(
+      {Key? key, required this.chosenBrands, required this.onChange, required this.allBrands})
       : super(key: key);
-  final Categories chosenCategory;
-  final Function(Categories) onChange;
+  final List<Brands> chosenBrands;
+  final List<Brands> allBrands;
+  final Function(Brands) onChange;
 
-  List<Color> getButtonColors(Categories currentIndexCategories, context) {
+  List<Color> getButtonColors(Brands currentIndexCategories, context) {
     // the first item is the background
     // the second is the textcolor
-    if (currentIndexCategories == chosenCategory) {
+    if (chosenBrands.contains(currentIndexCategories)) {
       return [
         getAppColorScheme(context).primary,
         getAppColorScheme(context).onPrimary
@@ -119,25 +142,25 @@ class _CategoriesHorizontalList extends StatelessWidget {
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            Categories currentIndexCategories = Categories.values[index];
+            Brands currentIndexBrand = Brands.values[index];
             return GestureDetector(
-              onTap: () => onChange(currentIndexCategories),
+              onTap: () => onChange(currentIndexBrand),
               child: Container(
                 padding: EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: getButtonColors(currentIndexCategories, context)[0],
+                  color: getButtonColors(currentIndexBrand, context)[0],
                 ),
                 alignment: Alignment.center,
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: FittedBox(
                   fit: BoxFit.fitHeight,
                   child: Text(
-                    currentIndexCategories.displayName,
+                    currentIndexBrand.displayName,
                     style: TextStyle(
                         color:
-                            getButtonColors(currentIndexCategories, context)[1],
-                        fontWeight: currentIndexCategories == chosenCategory
+                        getButtonColors(currentIndexBrand, context)[1],
+                        fontWeight: currentIndexBrand == chosenBrands
                             ? FontWeight.bold
                             : null),
                   ),
@@ -145,10 +168,11 @@ class _CategoriesHorizontalList extends StatelessWidget {
               ),
             );
           },
-          separatorBuilder: (context, index) => const SizedBox(
-                width: 8,
-              ),
-          itemCount: Categories.values.length),
+          separatorBuilder: (context, index) =>
+          const SizedBox(
+            width: 8,
+          ),
+          itemCount: allBrands.length),
     );
   }
 }
@@ -166,15 +190,16 @@ class _ProductsGridView extends StatelessWidget {
       crossAxisCount: 2,
       children: List.generate(
           products.length,
-          (index) => Padding(
-              padding: EdgeInsets.all(10),
-              child: ShowProductDetails(
-                  subTitle: products[index].sizeInCL.toString(),
-                  productPrice: products[index].priceInDKK.toString(),
-                  optionIcon: Icons.add_shopping_cart_outlined,
-                  title: products[index].name,
-                  productImage: products[index].image,
-                  favouriteIcon: true))),
+              (index) =>
+              Padding(
+                  padding: EdgeInsets.all(10),
+                  child: ShowProductDetails(
+                      subTitle: products[index].sizeInCL.toString(),
+                      productPrice: products[index].priceInDKK.toString(),
+                      optionIcon: Icons.add_shopping_cart_outlined,
+                      title: products[index].name,
+                      productImage: products[index].image,
+                      favouriteIcon: true))),
     );
   }
 }

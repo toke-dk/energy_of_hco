@@ -63,12 +63,12 @@ class _MyHomePageState extends State<MyHomePage> {
         energyPoints: 103,
         favouriteProducts: [
           Product(
-              name: "Monster",
+              name: "Monster top rank",
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
               priceInDKK: 12.5,
-              categories: [Categories.monster],
-              sizeInCL: 25)
+              brand: Brands.monster,
+              sizeInCL: 25),
         ]),
     User(
         firstName: "Flappy",
@@ -76,11 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
         energyPoints: 243,
         favouriteProducts: [
           Product(
-              name: "Bold super duper",
+              name: "Bold super duper ultra omega",
               image: Image.network(
                   "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
               priceInDKK: 12.5,
-              categories: [Categories.bold],
+              brand: Brands.bold,
               sizeInCL: 26)
         ])
   ];

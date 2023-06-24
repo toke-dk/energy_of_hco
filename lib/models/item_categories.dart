@@ -1,29 +1,48 @@
-enum Categories { bestSelling, favourites, monster, cult, redBull, bold }
+import 'package:energy_of_hco/models/product.dart';
 
-extension CategroriesExtension on Categories {
+enum TopCategories {all, favourite, bestSelling}
+
+extension TopCategoiresExtienstion on TopCategories {
   String get displayName {
     switch (this) {
-      case Categories.bestSelling:
-        return "Best selling";
-      case Categories.favourites:
-        return "Favorites";
-      case Categories.monster:
+      case TopCategories.all:
+        return "All";
+      case TopCategories.bestSelling:
+        return "Best Selling";
+      case TopCategories.favourite:
+        return "Favourite";
+    }
+  }
+
+  List<String> get brandNamesAsList=> [
+    Brands.monster.displayName,
+    Brands.cult.displayName,
+    Brands.redBull.displayName,
+    Brands.bold.displayName
+  ];
+
+}
+
+enum Brands { monster, cult, redBull, bold }
+
+extension BrandsExtenstion on Brands {
+  String get displayName {
+    switch (this) {
+      case Brands.monster:
         return "Monster";
-      case Categories.cult:
+      case Brands.cult:
         return "Cult";
-      case Categories.redBull:
+      case Brands.redBull:
         return "Red Bull";
-      case Categories.bold:
+      case Brands.bold:
         return "Bold";
     }
   }
 
-  List<Categories> get getBrands => [
-        Categories.monster,
-        Categories.cult,
-        Categories.redBull,
-        Categories.bold
+  List<String> get brandNamesAsList=> [
+        Brands.monster.displayName,
+        Brands.cult.displayName,
+        Brands.redBull.displayName,
+        Brands.bold.displayName
       ];
-
-  bool get isBrand => getBrands.contains(this);
 }
