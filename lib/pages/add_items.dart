@@ -4,9 +4,7 @@ import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
-import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:energy_of_hco/widgets/show_product_detail.dart';
-import 'package:energy_of_hco/widgets/total_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,15 +19,11 @@ class AddItems extends StatefulWidget {
 
 class _AddItemsState extends State<AddItems> {
   late List<Product> allProducts;
-  late List<Product> favouriteProducts;
 
   @override
   void initState() {
     allProducts =
         Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
-    favouriteProducts =
-        Provider.of<FavouriteProductsNotifier>(context, listen: false)
-            .getFavouriteProducts;
     super.initState();
   }
 
@@ -48,6 +42,11 @@ class _AddItemsState extends State<AddItems> {
   void removeFromCartByProduct(context, Product product) {
     Provider.of<CartProvider>(context, listen: false)
         .removeItemByProduct(product);
+  }
+
+  List<Product> getFavouriteProducts(context, bool listen) {
+    return Provider.of<FavouriteProductsNotifier>(context, listen: listen)
+        .getFavouriteProducts;
   }
 
   TopCategories chosenTopCategory = TopCategories.all;
@@ -107,8 +106,8 @@ class _AddItemsState extends State<AddItems> {
                     minHeight: 15,
                     minWidth: 15,
                   ),
-                  decoration:
-                      BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.red),
                   child: FittedBox(
                       fit: BoxFit.contain,
                       child: Text(
@@ -173,7 +172,7 @@ class _AddItemsState extends State<AddItems> {
                 },
 
                 ///TODO get this mess to look a bit nicer
-                favouriteProducts: favouriteProducts,
+                favouriteProducts: getFavouriteProducts(context, true),
                 onProductCartStateChange: (Product product, bool newValue) {
                   if (newValue) {
                     addItemToCart(
@@ -216,12 +215,12 @@ class _ProductsGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      physics: ScrollPhysics(),
+      physics: const ScrollPhysics(),
       crossAxisCount: 2,
       children: List.generate(products.length, (index) {
         Product currentIndexProduct = products[index];
         return Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: ShowProductDetails(
                 onOptionIconTap: () => onProductCartStateChange(
                     currentIndexProduct, !_isItemInCart(currentIndexProduct)),
