@@ -45,7 +45,8 @@ class _AddItemsState extends State<AddItems> {
   }
 
   void removeFromCartByProduct(context, Product product) {
-    Provider.of<CartProvider>(context, listen: false).removeItemByProduct(product);
+    Provider.of<CartProvider>(context, listen: false)
+        .removeItemByProduct(product);
   }
 
   TopCategories chosenTopCategory = TopCategories.all;
@@ -67,7 +68,7 @@ class _AddItemsState extends State<AddItems> {
         break;
       case TopCategories.favourite:
         topCategoryProductListFiltered =
-            Provider.of<FavouriteProductsNotifier>(context)
+            Provider.of<FavouriteProductsNotifier>(context, listen: true)
                 .getFavouriteProducts;
         break;
       case TopCategories.bestSelling:
@@ -160,17 +161,13 @@ class _AddItemsState extends State<AddItems> {
                     chosenTopCategory, chosenBrands, context),
                 onFavouriteChange: (Product product, bool value) {
                   if (!value) {
-                    setState(() {
-                      Provider.of<FavouriteProductsNotifier>(context,
-                              listen: false)
-                          .addFavouriteProduct(product);
-                    });
+                    Provider.of<FavouriteProductsNotifier>(context,
+                            listen: false)
+                        .addFavouriteProduct(product);
                   } else {
-                    setState(() {
-                      Provider.of<FavouriteProductsNotifier>(context,
-                              listen: false)
-                          .removeFavouriteProduct(product);
-                    });
+                    Provider.of<FavouriteProductsNotifier>(context,
+                            listen: false)
+                        .removeFavouriteProduct(product);
                   }
                 },
 
@@ -184,7 +181,7 @@ class _AddItemsState extends State<AddItems> {
                     removeFromCartByProduct(context, product);
                   }
                 },
-                cartItemsInCart: getCartItemsAddedToCart(context,listen: true),
+                cartItemsInCart: getCartItemsAddedToCart(context, listen: true),
               )
             ],
           ),
