@@ -99,6 +99,7 @@ class _AddItemsState extends State<AddItems> {
                 allItems: TopCategories.values,
                 allTitles:
                     TopCategories.values.map((e) => e.displayName).toList(),
+                scaleFactor: 1.2,
               ),
               MyHorizontalListView(
                 onChange: (newBrand) {
@@ -106,10 +107,10 @@ class _AddItemsState extends State<AddItems> {
                     chosenBrands = _onBrandsClickChange(newBrand);
                   });
                 },
+                showCheckMark: true,
                 chosenItems: chosenBrands,
                 allItems: Brands.values,
                 allTitles: Brands.values.map((e) => e.displayName).toList(),
-                scaleFactor: 0.8,
               ),
               Text(
                 chosenTopCategory.displayName,
@@ -133,13 +134,15 @@ class MyHorizontalListView extends StatelessWidget {
       required this.onChange,
       required this.allItems,
       required this.allTitles,
-      this.scaleFactor})
+      this.scaleFactor,
+      this.showCheckMark})
       : super(key: key);
   final List<dynamic> chosenItems;
   final List<dynamic> allItems;
   final Function(dynamic) onChange;
   final List<String> allTitles;
   final double? scaleFactor;
+  final bool? showCheckMark;
 
   List<Color> _getButtonColors(dynamic currentIndexCategories, context) {
     // the first item is the background
@@ -156,6 +159,18 @@ class MyHorizontalListView extends StatelessWidget {
     ];
   }
 
+  Icon getIconFromCheckState(bool isChecked, Color color) {
+    return isChecked
+        ? Icon(
+            Icons.check_circle,
+            color: color,
+          )
+        : Icon(
+            Icons.check_circle_outline,
+            color: color,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Transform.scale(
@@ -167,24 +182,38 @@ class MyHorizontalListView extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              dynamic currentIndexBrand = allItems[index];
+              dynamic currentIndexItem = allItems[index];
               return GestureDetector(
-                onTap: () => onChange(currentIndexBrand),
+                onTap: () => onChange(currentIndexItem),
                 child: Container(
                   padding: EdgeInsets.all(7),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: _getButtonColors(currentIndexBrand, context)[0],
+                    borderRadius: BorderRadius.circular(17),
+                    color: _getButtonColors(currentIndexItem, context)[0],
                   ),
                   alignment: Alignment.center,
                   margin: const EdgeInsets.symmetric(vertical: 10),
                   child: FittedBox(
                     fit: BoxFit.fitHeight,
-                    child: Text(
-                      allTitles[index],
-                      style: TextStyle(
-                          color:
-                              _getButtonColors(currentIndexBrand, context)[1]),
+                    child: Row(
+                      children: [
+                        showCheckMark == true
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4),
+                                child: getIconFromCheckState(
+                                    chosenItems.contains(currentIndexItem),
+                                    _getButtonColors(
+                                        currentIndexItem, context)[1]),
+                              )
+                            : SizedBox(),
+                        Text(
+                          allTitles[index],
+                          style: TextStyle(
+                              color: _getButtonColors(
+                                  currentIndexItem, context)[1]),
+                        ),
+                      ],
                     ),
                   ),
                 ),
