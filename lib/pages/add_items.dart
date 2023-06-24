@@ -44,6 +44,18 @@ class _AddItemsState extends State<AddItems> {
         .removeItemByProduct(product);
   }
 
+  void addFavouriteProduct(context, Product product){
+    Provider.of<FavouriteProductsNotifier>(context,
+        listen: false)
+        .addFavouriteProduct(product);
+  }
+
+  void removeFavouriteProduct(context, Product product){
+    Provider.of<FavouriteProductsNotifier>(context,
+        listen: false)
+        .removeFavouriteProduct(product);
+  }
+
   List<Product> getFavouriteProducts(context, bool listen) {
     return Provider.of<FavouriteProductsNotifier>(context, listen: listen)
         .getFavouriteProducts;
@@ -161,13 +173,9 @@ class _AddItemsState extends State<AddItems> {
                     chosenTopCategory, chosenBrands, context),
                 onFavouriteChange: (Product product, bool value) {
                   if (!value) {
-                    Provider.of<FavouriteProductsNotifier>(context,
-                            listen: false)
-                        .addFavouriteProduct(product);
+                    addFavouriteProduct(context, product);
                   } else {
-                    Provider.of<FavouriteProductsNotifier>(context,
-                            listen: false)
-                        .removeFavouriteProduct(product);
+                    removeFavouriteProduct(context, product);
                   }
                 },
 
