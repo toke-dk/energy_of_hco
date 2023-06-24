@@ -116,7 +116,6 @@ class _ChooseUserState extends State<ChooseUser> {
                         ))
                       ],
                       rows: allUsers.map((user) {
-                        print(user.firstName);
                         return DataRow(
                             onSelectChanged: (_) {
                               Navigator.push(

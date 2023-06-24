@@ -60,7 +60,7 @@ class MyHorizontalListView extends StatelessWidget {
               return GestureDetector(
                 onTap: () => onChange(currentIndexItem),
                 child: Container(
-                  padding: EdgeInsets.all(7),
+                  padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(17),
                     color: _getButtonColors(currentIndexItem, context)[0],
@@ -80,7 +80,7 @@ class MyHorizontalListView extends StatelessWidget {
                                     _getButtonColors(
                                         currentIndexItem, context)[1]),
                               )
-                            : SizedBox(),
+                            : const SizedBox(),
                         Text(
                           allTitles[index],
                           style: TextStyle(

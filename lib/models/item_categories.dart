@@ -1,6 +1,4 @@
-import 'package:energy_of_hco/models/product.dart';
-
-enum TopCategories {all, favourite, bestSelling}
+enum TopCategories { all, favourite, bestSelling }
 
 extension TopCategoiresExtienstion on TopCategories {
   String get displayName {

@@ -23,7 +23,7 @@ class FavouriteProductsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeFavouriteProduct(Product product){
+  void removeFavouriteProduct(Product product) {
     _products.remove(product);
     notifyListeners();
   }

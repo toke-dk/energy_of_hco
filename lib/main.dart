@@ -1,5 +1,3 @@
-import 'package:energy_of_hco/models/item_categories.dart';
-import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/choose_user.dart';
 import 'package:energy_of_hco/pages/overview_page.dart';
@@ -57,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialPageRoute(
                 builder: (context) => ChangeNotifierProvider(
                     create: (BuildContext context) => UsersNotifier(),
-                    child: ChooseUser()))),
+                    child: const ChooseUser()))),
       ),
       appBar: AppBar(
         title: Text(

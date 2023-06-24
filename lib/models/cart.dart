@@ -22,18 +22,17 @@ class Cart extends ChangeNotifier {
 }
 
 class CartProvider extends ChangeNotifier {
-
   final List<CartItem> _cartItems = <CartItem>[];
-  
+
   List<CartItem> get getItems => UnmodifiableListView(_cartItems);
 
   int get length => _cartItems.length;
-  
+
   void addItem(CartItem item) {
     _cartItems.add(item);
     notifyListeners();
   }
-  
+
   void removeItem(CartItem item) {
     _cartItems.remove(item);
   }
@@ -42,6 +41,4 @@ class CartProvider extends ChangeNotifier {
     _cartItems.removeWhere((CartItem item) => item.product == product);
     notifyListeners();
   }
-
-
 }

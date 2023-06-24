@@ -5,7 +5,7 @@ import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
-import 'package:energy_of_hco/widgets/showProductDetail.dart';
+import 'package:energy_of_hco/widgets/show_product_detail.dart';
 import 'package:energy_of_hco/widgets/total_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -101,7 +101,7 @@ class _AddItemsState extends State<AddItems> {
                 right: 8,
                 top: 8,
                 child: Container(
-                  constraints: BoxConstraints(
+                  constraints: const BoxConstraints(
                     maxHeight: 15,
                     maxWidth: 15,
                     minHeight: 15,
@@ -191,8 +191,6 @@ class _AddItemsState extends State<AddItems> {
     );
   }
 }
-
-
 
 class _ProductsGridView extends StatelessWidget {
   const _ProductsGridView(

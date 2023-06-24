@@ -22,8 +22,7 @@ class Product {
 }
 
 class ProductsNotifier extends ChangeNotifier {
-  final List<Product> _allProducts =
-  [
+  final List<Product> _allProducts = [
     Product(
         name: "Monster top rank",
         image: Image.network(

@@ -1,6 +1,6 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
-import 'package:energy_of_hco/widgets/showProductDetail.dart';
+import 'package:energy_of_hco/widgets/show_product_detail.dart';
 import 'package:flutter/material.dart';
 
 class TotalOrders extends StatelessWidget {

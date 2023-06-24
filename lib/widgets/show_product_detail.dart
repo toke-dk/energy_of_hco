@@ -1,5 +1,4 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
-import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +47,7 @@ class ShowProductDetails extends StatelessWidget {
               child: Stack(
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: SizedBox.expand(
@@ -91,7 +90,7 @@ class ShowProductDetails extends StatelessWidget {
                       child: Text(
                         title ?? "",
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                     Row(
@@ -112,7 +111,7 @@ class ShowProductDetails extends StatelessWidget {
                                   style: getAppTextTheme(context).subtitle1,
                                 ),
                               )
-                            : SizedBox()
+                            : const SizedBox()
                       ],
                     ),
                     Row(

@@ -42,7 +42,7 @@ class _DaysScrollState extends State<DaysScroll> {
   DateTime _getFirstMondayOfYear(int year) {
     DateTime date = DateTime(year, 1, 1);
     while (date.weekday != DateTime.monday) {
-      date = date.add(Duration(days: 1));
+      date = date.add(const Duration(days: 1));
     }
     return date;
   }
@@ -66,7 +66,7 @@ class _DaysScrollState extends State<DaysScroll> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: 110,
         child: ScrollablePositionedList.builder(
           initialScrollIndex: _getWeekNumberFromDate(_initialDate),
@@ -80,11 +80,11 @@ class _DaysScrollState extends State<DaysScroll> {
               child: Center(
                 child: ListView.separated(
                     shrinkWrap: true,
-                    separatorBuilder: (context, index) => SizedBox(
+                    separatorBuilder: (context, index) => const SizedBox(
                           width: 10,
                         ),
                     itemCount: 7,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int indexDay) {
                       DateTime thisIndexDate = _getWeekDates(
@@ -100,7 +100,7 @@ class _DaysScrollState extends State<DaysScroll> {
                               });
                             },
                             child: Container(
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               width: MediaQuery.of(context).size.width * 0.11,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
