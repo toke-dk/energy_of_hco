@@ -13,14 +13,6 @@ extension TopCategoiresExtienstion on TopCategories {
         return "Favourite";
     }
   }
-
-  List<String> get brandNamesAsList=> [
-    Brands.monster.displayName,
-    Brands.cult.displayName,
-    Brands.redBull.displayName,
-    Brands.bold.displayName
-  ];
-
 }
 
 enum Brands { monster, cult, redBull, bold }
@@ -38,11 +30,4 @@ extension BrandsExtenstion on Brands {
         return "Bold";
     }
   }
-
-  List<String> get brandNamesAsList=> [
-        Brands.monster.displayName,
-        Brands.cult.displayName,
-        Brands.redBull.displayName,
-        Brands.bold.displayName
-      ];
 }
