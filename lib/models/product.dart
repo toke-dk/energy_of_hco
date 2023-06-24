@@ -7,8 +7,10 @@ class Product {
   final Image image;
   final double priceInDKK;
   final double sizeInCL;
+  final bool? isBestSelling;
 
   Product({
+    this.isBestSelling,
     required this.sizeInCL,
     required this.brand,
     required this.name,

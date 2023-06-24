@@ -27,6 +27,25 @@ class _AddItemsState extends State<AddItems> {
     return newChosenBrands;
   }
 
+  List<Product> _getProductsToShow(
+      TopCategories topCategoryChosen, List<Brands> brandsChosen) {
+    List<Product> topCategoryProductListFiltered;
+    switch (topCategoryChosen) {
+      case TopCategories.all:
+        topCategoryProductListFiltered = allProducts;
+        break;
+      case TopCategories.favourite:
+        topCategoryProductListFiltered = widget.user.favouriteProducts;
+        break;
+      case TopCategories.bestSelling:
+        topCategoryProductListFiltered =
+            allProducts.where((e) => e.isBestSelling == true).toList();
+        break;
+    }
+    if(brandsChosen.isEmpty) return topCategoryProductListFiltered;
+    return topCategoryProductListFiltered.where((product) => brandsChosen.contains(product.brand)).toList();
+  }
+
   List<Brands> chosenBrands = [];
 
   final List<Product> allProducts = [
@@ -117,7 +136,7 @@ class _AddItemsState extends State<AddItems> {
                 style: getAppTextTheme(context).headline5,
               ),
               _ProductsGridView(
-                products: [],
+                products: _getProductsToShow(chosenTopCategory, chosenBrands),
               )
             ],
           ),
