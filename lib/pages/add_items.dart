@@ -20,19 +20,23 @@ class AddItems extends StatefulWidget {
 
 class _AddItemsState extends State<AddItems> {
   late List<Product> allProducts;
-  late List<Product> favouriteItems;
+  late List<Product> favouriteProducts;
 
   @override
   void initState() {
     allProducts =
         Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
-    favouriteItems =
+    favouriteProducts =
         Provider.of<FavouriteProductsNotifier>(context, listen: false)
             .getFavouriteProducts;
     super.initState();
   }
 
-  int getCarLength(context) {
+  List<CartItem> getCartItemsAddedToCart(context) {
+    return Provider.of<CartProvider>(context, listen: true).getItems;
+  }
+
+  int getCartLength(context) {
     return Provider.of<CartProvider>(context, listen: true).length;
   }
 
@@ -95,10 +99,13 @@ class _AddItemsState extends State<AddItems> {
                   ),
                   decoration:
                       BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                  child: FittedBox(fit: BoxFit.contain,child: Text(getCarLength(context).toString(),)),
+                  child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        getCartLength(context).toString(),
+                      )),
                 ),
               ),
-
             ],
           ),
         ],
@@ -160,7 +167,7 @@ class _AddItemsState extends State<AddItems> {
                 },
 
                 ///TODO get this mess to look a bit nicer
-                favouriteProducts: favouriteItems,
+                favouriteProducts: favouriteProducts,
                 onAddToCart: (Product product) {
                   if (!Provider.of<CartProvider>(context, listen: false)
                       .getItems
@@ -172,6 +179,7 @@ class _AddItemsState extends State<AddItems> {
                     });
                   }
                 },
+                cartItemsAddedToCart: getCartItemsAddedToCart(context),
               )
             ],
           ),
@@ -288,13 +296,15 @@ class _ProductsGridView extends StatelessWidget {
       required this.products,
       required this.onFavouriteChange,
       required this.favouriteProducts,
-      required this.onAddToCart})
+      required this.onAddToCart,
+      required this.cartItemsAddedToCart})
       : super(key: key);
 
   final List<Product> products;
   final Function(Product product, bool value) onFavouriteChange;
   final List<Product> favouriteProducts;
   final Function(Product) onAddToCart;
+  final List<CartItem> cartItemsAddedToCart;
 
   @override
   Widget build(BuildContext context) {
@@ -302,21 +312,26 @@ class _ProductsGridView extends StatelessWidget {
       shrinkWrap: true,
       physics: ScrollPhysics(),
       crossAxisCount: 2,
-      children: List.generate(
-          products.length,
-          (index) => Padding(
-              padding: EdgeInsets.all(10),
-              child: ShowProductDetails(
-                  onOptionIconTap: () => onAddToCart(products[index]),
-                  onFavouriteChange: (value) =>
-                      onFavouriteChange(products[index], value),
-                  isFavourite: favouriteProducts.contains(products[index]),
-                  subTitle: products[index].sizeInCL.toString(),
-                  productPrice: products[index].priceInDKK.toString(),
-                  optionIcon: Icons.add_shopping_cart_outlined,
-                  title: products[index].name,
-                  productImage: products[index].image,
-                  favouriteIcon: true))),
+      children: List.generate(products.length, (index) {
+        Product currentIndexProduct = products[index];
+        return Padding(
+            padding: EdgeInsets.all(10),
+            child: ShowProductDetails(
+                onOptionIconTap: () => onAddToCart(currentIndexProduct),
+                onFavouriteChange: (value) =>
+                    onFavouriteChange(currentIndexProduct, value),
+                isFavourite: favouriteProducts.contains(currentIndexProduct),
+                subTitle: currentIndexProduct.sizeInCL.toString(),
+                productPrice: currentIndexProduct.priceInDKK.toString(),
+                optionIcon: cartItemsAddedToCart
+                        .map((items) => items.product)
+                        .contains(currentIndexProduct)
+                    ? Icons.check
+                    : Icons.add_shopping_cart_outlined,
+                title: currentIndexProduct.name,
+                productImage: currentIndexProduct.image,
+                favouriteIcon: true));
+      }),
     );
   }
 }
