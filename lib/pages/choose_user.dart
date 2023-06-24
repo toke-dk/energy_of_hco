@@ -1,4 +1,5 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/add_items.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
@@ -13,10 +14,23 @@ class ChooseUser extends StatefulWidget {
 }
 
 class _ChooseUserState extends State<ChooseUser> {
+  User testUser = User(
+      firstName: "Toke",
+      lastName: "Tester",
+      energyPoints: 100,
+      favouriteProducts: []);
+
+  late List<User> allUsers;
+
+  @override
+  void initState() {
+    Provider.of<UsersNotifier>(context, listen: false).addUser(testUser);
+    allUsers = Provider.of<UsersNotifier>(context, listen: false).getUsers;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    List<User> allUsers = Provider.of<UsersNotifier>(context).getUsers;
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -39,12 +53,11 @@ class _ChooseUserState extends State<ChooseUser> {
                     setState(() {
                       Provider.of<UsersNotifier>(context, listen: false)
                           .addUser(User(
-                          firstName: value[0],
-                          lastName: value[1],
-                          energyPoints: 0,
-                          favouriteProducts: []));
+                              firstName: value[0],
+                              lastName: value[1],
+                              energyPoints: 0,
+                              favouriteProducts: []));
                     });
-
                   }),
                   child: Row(
                     children: [
@@ -109,12 +122,20 @@ class _ChooseUserState extends State<ChooseUser> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ChangeNotifierProvider(
-                                        create: (BuildContext context) => FavouriteProductsNotifier(),
-                                        child: AddItems(
-                                              user: user,
-                                            ),
-                                      )));
+                                    builder: (context) => MultiProvider(
+                                      providers: [
+                                        ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                FavouriteProductsNotifier()),
+                                        ChangeNotifierProvider(
+                                            create: (BuildContext context) =>
+                                                ProductsNotifier()),
+                                      ],
+                                      child: AddItems(
+                                        user: user,
+                                      ),
+                                    ),
+                                  ));
                             },
                             cells: [
                               DataCell(Text(user.generateFullName)),
