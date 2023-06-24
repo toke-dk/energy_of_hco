@@ -5,6 +5,7 @@ import 'package:energy_of_hco/pages/choose_user.dart';
 import 'package:energy_of_hco/pages/overview_page.dart';
 import 'package:energy_of_hco/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,35 +56,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // TODO these should come from the db of course
-  final List<User> users = [
-    User(
-        firstName: "John",
-        lastName: "Doe",
-        energyPoints: 103,
-        favouriteProducts: [
-          Product(
-              name: "Monster top rank",
-              image: Image.network(
-                  "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-              priceInDKK: 12.5,
-              brand: Brands.monster,
-              sizeInCL: 25),
-        ]),
-    User(
-        firstName: "Flappy",
-        lastName: "Bird",
-        energyPoints: 243,
-        favouriteProducts: [
-          Product(
-              name: "Bold super duper ultra omega",
-              image: Image.network(
-                  "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-              priceInDKK: 12.5,
-              brand: Brands.bold,
-              sizeInCL: 26)
-        ])
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ChooseUser(allUsers: users))),
+                builder: (context) => ChangeNotifierProvider(
+                    create: (BuildContext context) => UsersNotifier(),
+                    child: ChooseUser()))),
       ),
       appBar: AppBar(
         title: Text(

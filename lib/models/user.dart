@@ -1,4 +1,17 @@
+import 'dart:collection';
+
 import 'package:energy_of_hco/models/product.dart';
+import 'package:flutter/cupertino.dart';
+
+class UsersNotifier extends ChangeNotifier {
+  final List<User> _users = <User>[];
+
+  List<User> get getUsers => UnmodifiableListView(_users);
+
+  void addUser(User user) {
+    _users.add(user);
+  }
+}
 
 class User {
   final String firstName;

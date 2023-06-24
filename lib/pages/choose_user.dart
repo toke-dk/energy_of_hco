@@ -3,14 +3,21 @@ import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/add_items.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ChooseUser extends StatelessWidget {
-  const ChooseUser({Key? key, required this.allUsers}) : super(key: key);
-
-  final List<User> allUsers;
+class ChooseUser extends StatefulWidget {
+  const ChooseUser({Key? key}) : super(key: key);
 
   @override
+  State<ChooseUser> createState() => _ChooseUserState();
+}
+
+class _ChooseUserState extends State<ChooseUser> {
+  @override
   Widget build(BuildContext context) {
+
+    List<User> allUsers = Provider.of<UsersNotifier>(context).getUsers;
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -28,8 +35,17 @@ class ChooseUser extends StatelessWidget {
                   hasShadow: true,
 
                   ///Todo do something with this value
-                  onTap: () => _becomeAMemberDialog(context)
-                      .then((value) => print("value: $value")),
+                  onTap: () => _becomeAMemberDialog(context).then((value) {
+                    setState(() {
+                      Provider.of<UsersNotifier>(context, listen: false)
+                          .addUser(User(
+                          firstName: value[0],
+                          lastName: value[1],
+                          energyPoints: 0,
+                          favouriteProducts: []));
+                    });
+
+                  }),
                   child: Row(
                     children: [
                       const SizedBox(
@@ -93,7 +109,9 @@ class ChooseUser extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddItems(user: user,)));
+                                      builder: (context) => AddItems(
+                                            user: user,
+                                          )));
                             },
                             cells: [
                               DataCell(Text(user.generateFullName)),
