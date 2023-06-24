@@ -32,12 +32,20 @@ class _AddItemsState extends State<AddItems> {
     super.initState();
   }
 
-  List<CartItem> getCartItemsAddedToCart(context) {
-    return Provider.of<CartProvider>(context, listen: true).getItems;
+  List<CartItem> getCartItemsAddedToCart(context, {required bool listen}) {
+    return Provider.of<CartProvider>(context, listen: listen).getItems;
   }
 
   int getCartLength(context) {
     return Provider.of<CartProvider>(context, listen: true).length;
+  }
+
+  void addItemToCart(context, CartItem item) {
+    Provider.of<CartProvider>(context, listen: false).addItem(item);
+  }
+
+  void removeFromCartByProduct(context, Product product) {
+    Provider.of<CartProvider>(context, listen: false).removeItemByProduct(product);
   }
 
   TopCategories chosenTopCategory = TopCategories.all;
@@ -168,18 +176,15 @@ class _AddItemsState extends State<AddItems> {
 
                 ///TODO get this mess to look a bit nicer
                 favouriteProducts: favouriteProducts,
-                onAddToCart: (Product product) {
-                  if (!Provider.of<CartProvider>(context, listen: false)
-                      .getItems
-                      .map((e) => e.product)
-                      .contains(product)) {
-                    setState(() {
-                      Provider.of<CartProvider>(context, listen: false)
-                          .addItem(CartItem(amount: 1, product: product));
-                    });
+                onProductCartStateChange: (Product product, bool newValue) {
+                  if (newValue) {
+                    addItemToCart(
+                        context, CartItem(amount: 1, product: product));
+                  } else {
+                    removeFromCartByProduct(context, product);
                   }
                 },
-                cartItemsAddedToCart: getCartItemsAddedToCart(context),
+                cartItemsInCart: getCartItemsAddedToCart(context,listen: true),
               )
             ],
           ),
@@ -296,15 +301,19 @@ class _ProductsGridView extends StatelessWidget {
       required this.products,
       required this.onFavouriteChange,
       required this.favouriteProducts,
-      required this.onAddToCart,
-      required this.cartItemsAddedToCart})
+      required this.onProductCartStateChange,
+      required this.cartItemsInCart})
       : super(key: key);
 
   final List<Product> products;
   final Function(Product product, bool value) onFavouriteChange;
   final List<Product> favouriteProducts;
-  final Function(Product) onAddToCart;
-  final List<CartItem> cartItemsAddedToCart;
+  final Function(Product product, bool newValue) onProductCartStateChange;
+  final List<CartItem> cartItemsInCart;
+
+  bool _isItemInCart(Product item) {
+    return cartItemsInCart.map((e) => e.product).contains(item);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -317,15 +326,14 @@ class _ProductsGridView extends StatelessWidget {
         return Padding(
             padding: EdgeInsets.all(10),
             child: ShowProductDetails(
-                onOptionIconTap: () => onAddToCart(currentIndexProduct),
+                onOptionIconTap: () => onProductCartStateChange(
+                    currentIndexProduct, !_isItemInCart(currentIndexProduct)),
                 onFavouriteChange: (value) =>
                     onFavouriteChange(currentIndexProduct, value),
                 isFavourite: favouriteProducts.contains(currentIndexProduct),
                 subTitle: currentIndexProduct.sizeInCL.toString(),
                 productPrice: currentIndexProduct.priceInDKK.toString(),
-                optionIcon: cartItemsAddedToCart
-                        .map((items) => items.product)
-                        .contains(currentIndexProduct)
+                optionIcon: _isItemInCart(currentIndexProduct)
                     ? Icons.check
                     : Icons.add_shopping_cart_outlined,
                 title: currentIndexProduct.name,
