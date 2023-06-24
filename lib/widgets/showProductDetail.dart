@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 class ShowProductDetails extends StatelessWidget {
   const ShowProductDetails(
       {Key? key,
-        required this.productImage,
-        this.title,
-        this.subTitle,
-        this.trailing,
-        this.productPrice,
-        this.favouriteIcon,
-        this.optionIcon})
+      required this.productImage,
+      this.title,
+      this.subTitle,
+      this.trailing,
+      this.productPrice,
+      this.favouriteIcon,
+      this.optionIcon,
+      this.isFavourite,
+      this.onFavouriteChange})
       : super(key: key);
 
   final Widget productImage;
@@ -20,6 +22,8 @@ class ShowProductDetails extends StatelessWidget {
   final String? trailing;
   final String? productPrice;
   final bool? favouriteIcon;
+  final bool? isFavourite;
+  final Function(bool)? onFavouriteChange;
   final IconData? optionIcon;
 
   @override
@@ -37,7 +41,7 @@ class ShowProductDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             AspectRatio(
-              aspectRatio: 100/50,
+              aspectRatio: 100 / 50,
               child: Stack(
                 children: [
                   Padding(
@@ -52,18 +56,23 @@ class ShowProductDetails extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                      right: 8,
-                      top: 8,
-                      child: InkWell(
-                        onTap: () {},
-                        child: favouriteIcon == true
-                            ? Icon(
-                          Icons.favorite_border,
-                          color: getAppColorScheme(context).primary,
-                        )
-                            : const SizedBox(),
-                      ))
+                  favouriteIcon == true
+                      ? Positioned(
+                          right: 8,
+                          top: 8,
+                          child: InkWell(
+                            onTap:
+                                onFavouriteChange != null && isFavourite != null
+                                    ? () => onFavouriteChange!(isFavourite!)
+                                    : null,
+                            child: Icon(
+                              isFavourite == true
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: getAppColorScheme(context).primary,
+                            ),
+                          ))
+                      : const SizedBox()
                 ],
               ),
             ),
@@ -94,12 +103,12 @@ class ShowProductDetails extends StatelessWidget {
                         ),
                         trailing != null
                             ? Flexible(
-                          child: Text(
-                            trailing ?? "",
-                            overflow: TextOverflow.ellipsis,
-                            style: getAppTextTheme(context).subtitle1,
-                          ),
-                        )
+                                child: Text(
+                                  trailing ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: getAppTextTheme(context).subtitle1,
+                                ),
+                              )
                             : SizedBox()
                       ],
                     ),

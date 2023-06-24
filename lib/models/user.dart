@@ -13,6 +13,22 @@ class UsersNotifier extends ChangeNotifier {
   }
 }
 
+class FavouriteProductsNotifier extends ChangeNotifier {
+  final List<Product> _products = <Product>[];
+
+  List<Product> get getFavouriteProducts => UnmodifiableListView(_products);
+
+  void addFavouriteProduct(Product product) {
+    _products.add(product);
+    notifyListeners();
+  }
+
+  void removeFavouriteProduct(Product product){
+    _products.remove(product);
+    notifyListeners();
+  }
+}
+
 class User {
   final String firstName;
   final String lastName;

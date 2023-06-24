@@ -109,9 +109,12 @@ class _ChooseUserState extends State<ChooseUser> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddItems(
-                                            user: user,
-                                          )));
+                                      builder: (context) => ChangeNotifierProvider(
+                                        create: (BuildContext context) => FavouriteProductsNotifier(),
+                                        child: AddItems(
+                                              user: user,
+                                            ),
+                                      )));
                             },
                             cells: [
                               DataCell(Text(user.generateFullName)),

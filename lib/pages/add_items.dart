@@ -6,6 +6,7 @@ import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:energy_of_hco/widgets/showProductDetail.dart';
 import 'package:energy_of_hco/widgets/total_orders.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddItems extends StatefulWidget {
   const AddItems({Key? key, required this.user}) : super(key: key);
@@ -27,23 +28,27 @@ class _AddItemsState extends State<AddItems> {
     return newChosenBrands;
   }
 
-  List<Product> _getProductsToShow(
-      TopCategories topCategoryChosen, List<Brands> brandsChosen) {
+  List<Product> _getProductsToShow(TopCategories topCategoryChosen,
+      List<Brands> brandsChosen, BuildContext context) {
     List<Product> topCategoryProductListFiltered;
     switch (topCategoryChosen) {
       case TopCategories.all:
         topCategoryProductListFiltered = allProducts;
         break;
       case TopCategories.favourite:
-        topCategoryProductListFiltered = widget.user.favouriteProducts;
+        topCategoryProductListFiltered =
+            Provider.of<FavouriteProductsNotifier>(context)
+                .getFavouriteProducts;
         break;
       case TopCategories.bestSelling:
         topCategoryProductListFiltered =
             allProducts.where((e) => e.isBestSelling == true).toList();
         break;
     }
-    if(brandsChosen.isEmpty) return topCategoryProductListFiltered;
-    return topCategoryProductListFiltered.where((product) => brandsChosen.contains(product.brand)).toList();
+    if (brandsChosen.isEmpty) return topCategoryProductListFiltered;
+    return topCategoryProductListFiltered
+        .where((product) => brandsChosen.contains(product.brand))
+        .toList();
   }
 
   List<Brands> chosenBrands = [];
@@ -88,6 +93,9 @@ class _AddItemsState extends State<AddItems> {
 
   @override
   Widget build(BuildContext context) {
+    List<Product> favouriteItems =
+        Provider.of<FavouriteProductsNotifier>(context).getFavouriteProducts;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add items"),
@@ -136,7 +144,23 @@ class _AddItemsState extends State<AddItems> {
                 style: getAppTextTheme(context).headline5,
               ),
               _ProductsGridView(
-                products: _getProductsToShow(chosenTopCategory, chosenBrands),
+                products: _getProductsToShow(chosenTopCategory, chosenBrands, context),
+                onFavouriteChange: (Product product, bool value) {
+                  if (!value) {
+                    setState(() {
+                      Provider.of<FavouriteProductsNotifier>(context,
+                              listen: false)
+                          .addFavouriteProduct(product);
+                    });
+                  } else {
+                    setState(() {
+                      Provider.of<FavouriteProductsNotifier>(context,
+                              listen: false)
+                          .removeFavouriteProduct(product);
+                    });
+                  }
+                },
+                favouriteProducts: favouriteItems,
               )
             ],
           ),
@@ -248,9 +272,16 @@ class MyHorizontalListView extends StatelessWidget {
 }
 
 class _ProductsGridView extends StatelessWidget {
-  const _ProductsGridView({Key? key, required this.products}) : super(key: key);
+  const _ProductsGridView(
+      {Key? key,
+      required this.products,
+      required this.onFavouriteChange,
+      required this.favouriteProducts})
+      : super(key: key);
 
   final List<Product> products;
+  final Function(Product product, bool value) onFavouriteChange;
+  final List<Product> favouriteProducts;
 
   @override
   Widget build(BuildContext context) {
@@ -263,6 +294,9 @@ class _ProductsGridView extends StatelessWidget {
           (index) => Padding(
               padding: EdgeInsets.all(10),
               child: ShowProductDetails(
+                  onFavouriteChange: (value) =>
+                      onFavouriteChange(products[index], value),
+                  isFavourite: favouriteProducts.contains(products[index]),
                   subTitle: products[index].sizeInCL.toString(),
                   productPrice: products[index].priceInDKK.toString(),
                   optionIcon: Icons.add_shopping_cart_outlined,
