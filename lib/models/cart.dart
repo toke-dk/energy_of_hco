@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:energy_of_hco/helpers/math.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -11,6 +12,8 @@ class CartItem {
     required this.amount,
     required this.product,
   });
+
+  void changeAmount(int newAmount) => amount+=newAmount;
 }
 
 class Cart extends ChangeNotifier {
@@ -29,9 +32,9 @@ class CartProvider extends ChangeNotifier {
 
   int get length => _cartItems.length;
 
-  double? get getTotalItemsCost => _cartItems.isNotEmpty ? _cartItems
+  double? get getTotalItemsCost => _cartItems.isNotEmpty ? myDoubleFunc(_cartItems
       .map((item) => item.product.priceInDKK * item.amount)
-      .reduce((a, b) => a + b) : null;
+      .reduce((a, b) => a + b)) : null;
 
   double get serviceFeesInDkk => _serviceFeesInDKK;
 
@@ -46,6 +49,12 @@ class CartProvider extends ChangeNotifier {
 
   void removeItemByProduct(Product product) {
     _cartItems.removeWhere((CartItem item) => item.product == product);
+    notifyListeners();
+  }
+
+  void editItemAmount(CartItem item, int amount) {
+    CartItem itemToChange = _cartItems.firstWhere((indexItem) => item == indexItem);
+    itemToChange.amount+amount >= 0 ? itemToChange.changeAmount(amount) : null;
     notifyListeners();
   }
 }

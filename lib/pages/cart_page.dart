@@ -9,6 +9,10 @@ import 'package:provider/provider.dart';
 class CartPage extends StatelessWidget {
   const CartPage({Key? key}) : super(key: key);
 
+  void editItemAmount(context, CartItem item, int amount){
+    return Provider.of<CartProvider>(context, listen: false).editItemAmount(item, amount);
+  }
+
   List<CartItem> getAllItems(context) {
     return Provider.of<CartProvider>(context, listen: true).getItems;
   }
@@ -66,8 +70,7 @@ class CartPage extends StatelessWidget {
                                 cartItem: getAllItems(context)[index],
                                 onItemAmountChange:
                                     (CartItem item, int changeAmount) {
-                                  print(
-                                      "change ${item.product.name}, $changeAmount");
+                                  editItemAmount(context, item, changeAmount);
                                 },
                               ),
                           separatorBuilder: (context, index) => const Padding(
@@ -162,7 +165,6 @@ class ShowCartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(cartItem.product.name);
     return Container(
       padding: const EdgeInsets.all(18),
       width: double.infinity,
@@ -170,19 +172,27 @@ class ShowCartItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          cartItem.product.image,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                cartItem.product.name,
-                style: getAppTextTheme(context).headline6,
+          AspectRatio(aspectRatio: 1,
+          child: cartItem.product.image),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    cartItem.product.name,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: getAppTextTheme(context).headline6!.copyWith(fontSize: 16),
+                  ),
+                  Text(
+                    "${cartItem.product.priceInDKK.toString()}kr.",
+                  )
+                ],
               ),
-              Text(
-                "${cartItem.product.priceInDKK.toString()}kr.",
-              )
-            ],
+            ),
           ),
           AspectRatio(
             aspectRatio: 1,

@@ -27,7 +27,7 @@ class ProductsNotifier extends ChangeNotifier {
         name: "Monster top rank",
         image: Image.network(
             "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg"),
-        priceInDKK: 12.5,
+        priceInDKK: 12.25,
         brand: Brands.monster,
         sizeInCL: 25),
     Product(
