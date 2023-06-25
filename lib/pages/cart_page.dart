@@ -52,93 +52,140 @@ class CartPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Cart"),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-          child: getAllItems(context).isNotEmpty
-              ? Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Items",
-                          style: getAppTextTheme(context).headline5,
-                        ),
-                        Text(
-                          "${getItemsLength(context).toString()} item${getItemsLength(context) > 1 ? 's' : ''}",
-                          style: getAppTextTheme(context).subtitle1,
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    MyPaper(
-                      child: ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            CartItem currentIndexItem = getAllItems(context)[index];
-                            return ShowCartItem(
-                              cartItem: currentIndexItem,
-                              onItemAmountChange:
-                                  (int changeAmount) {
-                                editItemAmount(context, currentIndexItem, changeAmount);
-                              },
-                              handleCartItemRemove: () =>
-                                  handleItemDeletion(context, currentIndexItem),
-                            );
-                          },
-                          separatorBuilder: (context, index) => const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 30),
-                                child: Divider(),
+      body: SizedBox(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 20, bottom: 65),
+                child: getAllItems(context).isNotEmpty
+                    ? Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Items",
+                                style: getAppTextTheme(context).headline5,
                               ),
-                          itemCount: getAllItems(context).length),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: const [
-                            Icon(Icons.add),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text("Add more"),
-                          ],
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                getAppColorScheme(context).onPrimary),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30)))),
-                      ),
-                    ),
-                    const Divider(
-                      height: 15,
-                      thickness: 1,
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ShowOrderPrices(
-                          rowsAndColumns: [
-                            [
-                              "Subtotal",
-                              subtotalPrice(context).toString() + " kr."
+                              Text(
+                                "${getItemsLength(context).toString()} item${getItemsLength(context) > 1 ? 's' : ''}",
+                                style: getAppTextTheme(context).subtitle1,
+                              )
                             ],
-                            ["Service fee", fees(context).toString() + " kr."],
-                            ["Total", totalPrice(context).toString() + " kr."]
-                          ],
-                        ))
-                  ],
-                )
-              : const SizedBox(),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          MyPaper(
+                            child: ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  CartItem currentIndexItem =
+                                      getAllItems(context)[index];
+                                  return ShowCartItem(
+                                    cartItem: currentIndexItem,
+                                    onItemAmountChange: (int changeAmount) {
+                                      editItemAmount(context, currentIndexItem,
+                                          changeAmount);
+                                    },
+                                    handleCartItemRemove: () =>
+                                        handleItemDeletion(
+                                            context, currentIndexItem),
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 30),
+                                      child: Divider(),
+                                    ),
+                                itemCount: getAllItems(context).length),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.add),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text("Add more"),
+                                ],
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      getAppColorScheme(context).onPrimary),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30)))),
+                            ),
+                          ),
+                          const Divider(
+                            height: 15,
+                            thickness: 1,
+                          ),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: ShowOrderPrices(
+                                rowsAndColumns: [
+                                  [
+                                    "Subtotal",
+                                    subtotalPrice(context).toString() + " kr."
+                                  ],
+                                  [
+                                    "Service fee",
+                                    fees(context).toString() + " kr."
+                                  ],
+                                  [
+                                    "Total",
+                                    totalPrice(context).toString() + " kr."
+                                  ]
+                                ],
+                              )),
+                        ],
+                      )
+                    : const SizedBox(),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Icon(Icons.local_fire_department),
+                      Text(
+                        "Place order!",
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      Icon(Icons.local_fire_department)
+                    ],
+                  ),
+                  style: ElevatedButton.styleFrom(
+                      primary: getAppColorScheme(context).primary,
+                      onPrimary: getAppColorScheme(context).onPrimary,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(17),
+                            topRight: const Radius.circular(17)),
+                      )),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
