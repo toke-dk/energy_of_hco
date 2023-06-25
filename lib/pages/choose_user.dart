@@ -25,8 +25,8 @@ class _ChooseUserState extends State<ChooseUser> {
 
   @override
   void initState() {
-    Provider.of<UsersNotifier>(context, listen: false).addUser(testUser);
-    allUsers = Provider.of<UsersNotifier>(context, listen: false).getUsers;
+    Provider.of<UsersProvider>(context, listen: false).addUser(testUser);
+    allUsers = Provider.of<UsersProvider>(context, listen: false).getUsers;
     super.initState();
   }
 
@@ -51,7 +51,7 @@ class _ChooseUserState extends State<ChooseUser> {
                   ///Todo do something with this value
                   onTap: () => _becomeAMemberDialog(context).then((value) {
                     setState(() {
-                      Provider.of<UsersNotifier>(context, listen: false)
+                      Provider.of<UsersProvider>(context, listen: false)
                           .addUser(User(
                               firstName: value[0],
                               lastName: value[1],
@@ -124,7 +124,7 @@ class _ChooseUserState extends State<ChooseUser> {
                                       providers: [
                                         ChangeNotifierProvider(
                                             create: (BuildContext context) =>
-                                                FavouriteProductsNotifier()),
+                                                FavouriteProductsProvider()),
                                         ChangeNotifierProvider(
                                             create: (BuildContext context) =>
                                                 ProductsNotifier()),

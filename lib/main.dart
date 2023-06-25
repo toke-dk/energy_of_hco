@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ChangeNotifierProvider(
-                    create: (BuildContext context) => UsersNotifier(),
+                    create: (BuildContext context) => UsersProvider(),
                     child: const ChooseUser()))),
       ),
       appBar: AppBar(

@@ -46,17 +46,17 @@ class _AddItemsState extends State<AddItems> {
   }
 
   void addFavouriteProduct(context, Product product) {
-    Provider.of<FavouriteProductsNotifier>(context, listen: false)
+    Provider.of<FavouriteProductsProvider>(context, listen: false)
         .addFavouriteProduct(product);
   }
 
   void removeFavouriteProduct(context, Product product) {
-    Provider.of<FavouriteProductsNotifier>(context, listen: false)
+    Provider.of<FavouriteProductsProvider>(context, listen: false)
         .removeFavouriteProduct(product);
   }
 
   List<Product> getFavouriteProducts(context, bool listen) {
-    return Provider.of<FavouriteProductsNotifier>(context, listen: listen)
+    return Provider.of<FavouriteProductsProvider>(context, listen: listen)
         .getFavouriteProducts;
   }
 
@@ -79,7 +79,7 @@ class _AddItemsState extends State<AddItems> {
         break;
       case TopCategories.favourite:
         topCategoryProductListFiltered =
-            Provider.of<FavouriteProductsNotifier>(context, listen: true)
+            Provider.of<FavouriteProductsProvider>(context, listen: true)
                 .getFavouriteProducts;
         break;
       case TopCategories.bestSelling:

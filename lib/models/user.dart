@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:flutter/cupertino.dart';
 
-class UsersNotifier extends ChangeNotifier {
+class UsersProvider extends ChangeNotifier {
   final List<User> _users = <User>[];
 
   List<User> get getUsers => UnmodifiableListView(_users);
@@ -13,7 +13,7 @@ class UsersNotifier extends ChangeNotifier {
   }
 }
 
-class FavouriteProductsNotifier extends ChangeNotifier {
+class FavouriteProductsProvider extends ChangeNotifier {
   final List<Product> _products = <Product>[];
 
   List<Product> get getFavouriteProducts => UnmodifiableListView(_products);
