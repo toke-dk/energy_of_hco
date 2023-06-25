@@ -40,11 +40,10 @@ class CartPage extends StatelessWidget {
   }
 
   void handleItemDeletion(context, item) {
-    _deletionAlertDialog(context,
-        handleRemove: () {
-          removeCartItem(context, item);
-          Navigator.pop(context);
-        });
+    _deletionAlertDialog(context, handleRemove: () {
+      removeCartItem(context, item);
+      Navigator.pop(context);
+    });
   }
 
   @override
@@ -80,13 +79,18 @@ class CartPage extends StatelessWidget {
                       child: ListView.separated(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemBuilder: (context, index) => ShowCartItem(
-                                cartItem: getAllItems(context)[index],
-                                onItemAmountChange:
-                                    (CartItem item, int changeAmount) {
-                                  editItemAmount(context, item, changeAmount);
-                                }, handleCartItemRemove: (CartItem item)=>handleItemDeletion(context, item),
-                              ),
+                          itemBuilder: (context, index) {
+                            CartItem currentIndexItem = getAllItems(context)[index];
+                            return ShowCartItem(
+                              cartItem: currentIndexItem,
+                              onItemAmountChange:
+                                  (int changeAmount) {
+                                editItemAmount(context, currentIndexItem, changeAmount);
+                              },
+                              handleCartItemRemove: () =>
+                                  handleItemDeletion(context, currentIndexItem),
+                            );
+                          },
                           separatorBuilder: (context, index) => const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 30),
                                 child: Divider(),
@@ -202,8 +206,8 @@ class ShowCartItem extends StatelessWidget {
       : super(key: key);
 
   final CartItem cartItem;
-  final Function(CartItem item) handleCartItemRemove;
-  final Function(CartItem item, int changeAmount) onItemAmountChange;
+  final Function() handleCartItemRemove;
+  final Function(int changeAmount) onItemAmountChange;
 
   @override
   Widget build(BuildContext context) {
@@ -249,21 +253,21 @@ class ShowCartItem extends StatelessWidget {
                     color: Colors.red,
                     size: 16,
                   ),
-                  onTap: () => handleCartItemRemove(cartItem),
+                  onTap: () => handleCartItemRemove(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _MyRoundedButton(
                       icon: Icons.add,
-                      onTap: () => onItemAmountChange(cartItem, 1),
+                      onTap: () => onItemAmountChange(1),
                     ),
                     Text(cartItem.amount.toString()),
                     _MyRoundedButton(
                       icon: Icons.remove,
                       onTap: () => cartItem.amount - 1 <= 0
-                          ? handleCartItemRemove(cartItem)
-                          : onItemAmountChange(cartItem, -1),
+                          ? handleCartItemRemove()
+                          : onItemAmountChange(-1),
                     ),
                   ],
                 )
