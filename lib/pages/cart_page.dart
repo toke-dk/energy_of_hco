@@ -18,7 +18,7 @@ class CartPage extends StatelessWidget {
   }
 
   int getItemsLength(context) {
-    return getAllItems(context).length;
+    return Provider.of<CartProvider>(context, listen: true).itemsLength;
   }
 
   double fees(context) {
@@ -110,9 +110,9 @@ class CartPage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: ShowOrderPrices(
                           rowsAndColumns: [
-                            ["Subtotal", subtotalPrice(context).toString()],
-                            ["Service fee", fees(context).toString()],
-                            ["Total", totalPrice(context).toString()]
+                            ["Subtotal", subtotalPrice(context).toString() + " kr."],
+                            ["Service fee", fees(context).toString() + " kr."],
+                            ["Total", totalPrice(context).toString() + " kr."]
                           ],
                         ))
                   ],
@@ -188,7 +188,7 @@ class ShowCartItem extends StatelessWidget {
                     style: getAppTextTheme(context).headline6!.copyWith(fontSize: 16),
                   ),
                   Text(
-                    "${cartItem.product.priceInDKK.toString()}kr.",
+                    "${cartItem.product.priceInDKK.toString()} kr.",
                   )
                 ],
               ),

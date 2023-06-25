@@ -13,7 +13,9 @@ class CartItem {
     required this.product,
   });
 
-  void changeAmount(int newAmount) => amount+=newAmount;
+  get totalPriceForItem => myDoubleCorrector(amount * product.priceInDKK);
+
+  void changeAmount(int newAmount) => amount += newAmount;
 }
 
 class Cart extends ChangeNotifier {
@@ -30,11 +32,17 @@ class CartProvider extends ChangeNotifier {
 
   List<CartItem> get getItems => UnmodifiableListView(_cartItems);
 
-  int get length => _cartItems.length;
+  int get productsLength => _cartItems.isNotEmpty
+      ? _cartItems.map((item) => item.amount).reduce((a, b) => a + b)
+      : 0;
 
-  double? get getTotalItemsCost => _cartItems.isNotEmpty ? myDoubleFunc(_cartItems
-      .map((item) => item.product.priceInDKK * item.amount)
-      .reduce((a, b) => a + b)) : null;
+  int get itemsLength => _cartItems.length;
+
+  double? get getTotalItemsCost => _cartItems.isNotEmpty
+      ? myDoubleCorrector(_cartItems
+          .map((item) => item.totalPriceForItem)
+          .reduce((a, b) => a + b))
+      : null;
 
   double get serviceFeesInDkk => _serviceFeesInDKK;
 
@@ -53,8 +61,11 @@ class CartProvider extends ChangeNotifier {
   }
 
   void editItemAmount(CartItem item, int amount) {
-    CartItem itemToChange = _cartItems.firstWhere((indexItem) => item == indexItem);
-    itemToChange.amount+amount >= 0 ? itemToChange.changeAmount(amount) : null;
+    CartItem itemToChange =
+        _cartItems.firstWhere((indexItem) => item == indexItem);
+    itemToChange.amount + amount >= 0
+        ? itemToChange.changeAmount(amount)
+        : null;
     notifyListeners();
   }
 }

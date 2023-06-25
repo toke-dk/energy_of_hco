@@ -33,7 +33,7 @@ class _AddItemsState extends State<AddItems> {
   }
 
   int getCartLength(context) {
-    return Provider.of<CartProvider>(context, listen: true).length;
+    return Provider.of<CartProvider>(context, listen: true).productsLength;
   }
 
   void addItemToCart(context, CartItem item) {
