@@ -1,3 +1,5 @@
+import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/models/cart.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/choose_user.dart';
 import 'package:energy_of_hco/pages/overview_page.dart';
@@ -17,10 +19,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Energy of HCØ',
-      theme: ThemeData(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Energy of HCØ',
+        theme: ThemeData(
+          primarySwatch: Palette.kPrimaryMaterialColor,
+          outlinedButtonTheme: OutlinedButtonThemeData(
+              style: ButtonStyle(
+                  side: MaterialStateProperty.all(
+                      BorderSide(color: Palette.kPrimaryMaterialColor[200]!)))),
           textTheme: TextTheme(
               headline1:
                   TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
@@ -40,8 +51,9 @@ class MyApp extends StatelessWidget {
               subtitle1: TextStyle(fontSize: 13, color: Colors.grey[600])),
           scaffoldBackgroundColor: const Color(0xffFAFAFA),
           fontFamily: "Jura",
-          primarySwatch: Palette.kPrimaryMaterialColor),
-      home: const MyHomePage(title: 'Overview'),
+        ),
+        home: const MyHomePage(title: 'Overview'),
+      ),
     );
   }
 }
