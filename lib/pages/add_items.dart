@@ -3,6 +3,7 @@ import 'package:energy_of_hco/models/cart.dart';
 import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
+import 'package:energy_of_hco/pages/cart_page.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/show_product_detail.dart';
 import 'package:flutter/material.dart';
@@ -44,15 +45,13 @@ class _AddItemsState extends State<AddItems> {
         .removeItemByProduct(product);
   }
 
-  void addFavouriteProduct(context, Product product){
-    Provider.of<FavouriteProductsNotifier>(context,
-        listen: false)
+  void addFavouriteProduct(context, Product product) {
+    Provider.of<FavouriteProductsNotifier>(context, listen: false)
         .addFavouriteProduct(product);
   }
 
-  void removeFavouriteProduct(context, Product product){
-    Provider.of<FavouriteProductsNotifier>(context,
-        listen: false)
+  void removeFavouriteProduct(context, Product product) {
+    Provider.of<FavouriteProductsNotifier>(context, listen: false)
         .removeFavouriteProduct(product);
   }
 
@@ -106,7 +105,12 @@ class _AddItemsState extends State<AddItems> {
             children: [
               IconButton(
                 icon: const Icon(Icons.shopping_basket),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CartPage()));
+                },
               ),
               Positioned(
                 right: 8,

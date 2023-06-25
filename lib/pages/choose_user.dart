@@ -118,8 +118,7 @@ class _ChooseUserState extends State<ChooseUser> {
                       rows: allUsers.map((user) {
                         return DataRow(
                             onSelectChanged: (_) {
-                              Navigator.push(
-                                  context,
+                              Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => MultiProvider(
                                       providers: [
@@ -129,9 +128,6 @@ class _ChooseUserState extends State<ChooseUser> {
                                         ChangeNotifierProvider(
                                             create: (BuildContext context) =>
                                                 ProductsNotifier()),
-                                        ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                CartProvider())
                                       ],
                                       child: AddItems(
                                         user: user,
