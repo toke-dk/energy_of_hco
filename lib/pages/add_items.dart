@@ -32,8 +32,8 @@ class _AddItemsState extends State<AddItems> {
     return Provider.of<CartProvider>(context, listen: listen).getItems;
   }
 
-  int getCartLength(context) {
-    return Provider.of<CartProvider>(context, listen: true).productsLength;
+  int getProductsLength(context, {bool? listen}) {
+    return Provider.of<CartProvider>(context, listen: listen ?? true).productsLength;
   }
 
   void addItemToCart(context, CartItem item) {
@@ -106,10 +106,12 @@ class _AddItemsState extends State<AddItems> {
               IconButton(
                 icon: const Icon(Icons.shopping_basket),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CartPage()));
+                  getProductsLength(context, listen: false) != 0
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const CartPage()))
+                      : null;
                 },
               ),
               Positioned(
@@ -127,7 +129,7 @@ class _AddItemsState extends State<AddItems> {
                   child: FittedBox(
                       fit: BoxFit.contain,
                       child: Text(
-                        getCartLength(context).toString(),
+                        getProductsLength(context).toString(),
                       )),
                 ),
               ),
