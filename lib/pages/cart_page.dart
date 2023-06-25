@@ -9,8 +9,14 @@ import 'package:provider/provider.dart';
 class CartPage extends StatelessWidget {
   const CartPage({Key? key}) : super(key: key);
 
-  void editItemAmount(context, CartItem item, int amount){
-    return Provider.of<CartProvider>(context, listen: false).editItemAmount(item, amount);
+  void editItemAmount(context, CartItem item, int amount) {
+    return Provider.of<CartProvider>(context, listen: false)
+        .editItemAmount(item, amount);
+  }
+
+  void removeCartItem(context, CartItem item) {
+    return Provider.of<CartProvider>(context, listen: false)
+        .removeCartItem(item);
   }
 
   List<CartItem> getAllItems(context) {
@@ -31,6 +37,14 @@ class CartPage extends StatelessWidget {
 
   double totalPrice(context) {
     return fees(context) + subtotalPrice(context);
+  }
+
+  void handleItemDeletion(context, item) {
+    _deletionAlertDialog(context,
+        handleRemove: () {
+          removeCartItem(context, item);
+          Navigator.pop(context);
+        });
   }
 
   @override
@@ -71,7 +85,7 @@ class CartPage extends StatelessWidget {
                                 onItemAmountChange:
                                     (CartItem item, int changeAmount) {
                                   editItemAmount(context, item, changeAmount);
-                                },
+                                }, handleCartItemRemove: (CartItem item)=>handleItemDeletion(context, item),
                               ),
                           separatorBuilder: (context, index) => const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 30),
@@ -110,7 +124,10 @@ class CartPage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: ShowOrderPrices(
                           rowsAndColumns: [
-                            ["Subtotal", subtotalPrice(context).toString() + " kr."],
+                            [
+                              "Subtotal",
+                              subtotalPrice(context).toString() + " kr."
+                            ],
                             ["Service fee", fees(context).toString() + " kr."],
                             ["Total", totalPrice(context).toString() + " kr."]
                           ],
@@ -123,6 +140,27 @@ class CartPage extends StatelessWidget {
     );
   }
 }
+
+Future<dynamic> _deletionAlertDialog(context,
+        {required Function() handleRemove}) =>
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text("Heads up!"),
+              content: const Text(
+                  "You are about to remove this item. Are you sure you want to remove it?"),
+              actions: [
+                TextButton(
+                  onPressed: () => handleRemove(),
+                  child: const Text("Yes"),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("No"))
+              ],
+            ));
 
 class ShowOrderPrices extends StatelessWidget {
   const ShowOrderPrices({Key? key, required this.rowsAndColumns})
@@ -157,10 +195,14 @@ class ShowOrderPrices extends StatelessWidget {
 
 class ShowCartItem extends StatelessWidget {
   const ShowCartItem(
-      {Key? key, required this.cartItem, required this.onItemAmountChange})
+      {Key? key,
+      required this.cartItem,
+      required this.onItemAmountChange,
+      required this.handleCartItemRemove})
       : super(key: key);
 
   final CartItem cartItem;
+  final Function(CartItem item) handleCartItemRemove;
   final Function(CartItem item, int changeAmount) onItemAmountChange;
 
   @override
@@ -172,11 +214,10 @@ class ShowCartItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AspectRatio(aspectRatio: 1,
-          child: cartItem.product.image),
+          AspectRatio(aspectRatio: 1, child: cartItem.product.image),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,7 +226,9 @@ class ShowCartItem extends StatelessWidget {
                     cartItem.product.name,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
-                    style: getAppTextTheme(context).headline6!.copyWith(fontSize: 16),
+                    style: getAppTextTheme(context)
+                        .headline6!
+                        .copyWith(fontSize: 16),
                   ),
                   Text(
                     "${cartItem.product.priceInDKK.toString()} kr.",
@@ -200,10 +243,13 @@ class ShowCartItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                  size: 16,
+                GestureDetector(
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                  onTap: () => handleCartItemRemove(cartItem),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,7 +261,9 @@ class ShowCartItem extends StatelessWidget {
                     Text(cartItem.amount.toString()),
                     _MyRoundedButton(
                       icon: Icons.remove,
-                      onTap: () => onItemAmountChange(cartItem, -1),
+                      onTap: () => cartItem.amount - 1 <= 0
+                          ? handleCartItemRemove(cartItem)
+                          : onItemAmountChange(cartItem, -1),
                     ),
                   ],
                 )
