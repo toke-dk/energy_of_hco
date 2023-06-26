@@ -1,0 +1,1 @@
+double kServiceFees = 8.30;

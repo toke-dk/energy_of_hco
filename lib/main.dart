@@ -1,5 +1,6 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:energy_of_hco/models/cart.dart';
+import 'package:energy_of_hco/models/order.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/choose_user.dart';
@@ -22,13 +23,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(
-            create: (BuildContext context) =>
-                ProductsNotifier()),
+        Provider(create: (BuildContext context) => ProductsNotifier()),
         ChangeNotifierProvider(
-            create: (BuildContext context) =>
-                UserProvider()),
-
+            create: (BuildContext context) => UserProvider()),
+        ChangeNotifierProvider(
+          create: (context) => OrderProvider(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
