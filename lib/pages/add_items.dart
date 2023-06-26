@@ -17,26 +17,10 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
+  List<CartItem> cartItems = [];
 
-  List<Product> getAllProducts(context){
+  List<Product> getAllProducts(context) {
     return Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
-  }
-
-  List<CartItem> getCartItemsAddedToCart(context, {required bool listen}) {
-    return Provider.of<CartProvider>(context, listen: listen).getItems;
-  }
-
-  int getProductsLength(context, {bool? listen}) {
-    return Provider.of<CartProvider>(context, listen: listen ?? true).productsLength;
-  }
-
-  void addItemToCart(context, CartItem item) {
-    Provider.of<CartProvider>(context, listen: false).addItem(item);
-  }
-
-  void removeFromCartByProduct(context, Product product) {
-    Provider.of<CartProvider>(context, listen: false)
-        .removeItemByProduct(product);
   }
 
   void addFavouriteProduct(context, Product product) {
@@ -72,12 +56,12 @@ class _AddItemsState extends State<AddItems> {
         topCategoryProductListFiltered = getAllProducts(context);
         break;
       case TopCategories.favourite:
-        topCategoryProductListFiltered =
-            getFavouriteProducts(context);
+        topCategoryProductListFiltered = getFavouriteProducts(context);
         break;
       case TopCategories.bestSelling:
-        topCategoryProductListFiltered =
-            getAllProducts(context).where((e) => e.isBestSelling == true).toList();
+        topCategoryProductListFiltered = getAllProducts(context)
+            .where((e) => e.isBestSelling == true)
+            .toList();
         break;
     }
     if (brandsChosen.isEmpty) return topCategoryProductListFiltered;
@@ -90,112 +74,156 @@ class _AddItemsState extends State<AddItems> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Add items"),
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_basket),
-                onPressed: () {
-                  getProductsLength(context, listen: false) != 0
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const CartPage()))
-                      : null;
-                },
-              ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  constraints: const BoxConstraints(
-                    maxHeight: 15,
-                    maxWidth: 15,
-                    minHeight: 15,
-                    minWidth: 15,
-                  ),
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.red),
-                  child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        getProductsLength(context).toString(),
-                      )),
+    return WillPopScope(
+      onWillPop: () async {
+        bool wantToLeave = await alertLeavingDialog(context);
+        if (wantToLeave) {
+          return true;
+        }
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Add items"),
+          actions: [
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.shopping_basket),
+                  onPressed: () {
+                    cartItems.isNotEmpty
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CartPage(
+                                      cartItems: cartItems,
+                                      onCartItemsChange:
+                                          (List<CartItem> newCartItems) {
+                                        setState(() {
+                                          cartItems = newCartItems;
+                                        });
+                                      },
+                                    )))
+                        : null;
+                  },
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Categories",
-                style: getAppTextTheme(context).headline6,
-              ),
-              MyHorizontalListView(
-                onChange: (newCategory) {
-                  setState(() {
-                    chosenTopCategory = newCategory;
-                  });
-                },
-                chosenItems: [chosenTopCategory],
-                allItems: TopCategories.values,
-                allTitles:
-                    TopCategories.values.map((e) => e.displayName).toList(),
-                scaleFactor: 1.2,
-              ),
-              MyHorizontalListView(
-                onChange: (newBrand) {
-                  setState(() {
-                    chosenBrands = _onBrandsClickChange(newBrand);
-                  });
-                },
-                showCheckMark: true,
-                chosenItems: chosenBrands,
-                allItems: Brands.values,
-                allTitles: Brands.values.map((e) => e.displayName).toList(),
-              ),
-              Text(
-                chosenTopCategory.displayName,
-                style: getAppTextTheme(context).headline5,
-              ),
-              _ProductsGridView(
-                products: _getProductsToShow(
-                    chosenTopCategory, chosenBrands, context),
-                onFavouriteChange: (Product product, bool value) {
-                  if (!value) {
-                    addFavouriteProduct(context, product);
-                  } else {
-                    removeFavouriteProduct(context, product);
-                  }
-                },
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      maxHeight: 15,
+                      maxWidth: 15,
+                      minHeight: 15,
+                      minWidth: 15,
+                    ),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.red),
+                    child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          cartItems.isNotEmpty
+                              ? cartItems
+                                  .map((e) => e.amount)
+                                  .reduce((value, element) => value + element)
+                                  .toString()
+                              : 0.toString(),
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Categories",
+                  style: getAppTextTheme(context).headline6,
+                ),
+                MyHorizontalListView(
+                  onChange: (newCategory) {
+                    setState(() {
+                      chosenTopCategory = newCategory;
+                    });
+                  },
+                  chosenItems: [chosenTopCategory],
+                  allItems: TopCategories.values,
+                  allTitles:
+                      TopCategories.values.map((e) => e.displayName).toList(),
+                  scaleFactor: 1.2,
+                ),
+                MyHorizontalListView(
+                  onChange: (newBrand) {
+                    setState(() {
+                      chosenBrands = _onBrandsClickChange(newBrand);
+                    });
+                  },
+                  showCheckMark: true,
+                  chosenItems: chosenBrands,
+                  allItems: Brands.values,
+                  allTitles: Brands.values.map((e) => e.displayName).toList(),
+                ),
+                Text(
+                  chosenTopCategory.displayName,
+                  style: getAppTextTheme(context).headline5,
+                ),
+                _ProductsGridView(
+                  products: _getProductsToShow(
+                      chosenTopCategory, chosenBrands, context),
+                  onFavouriteChange: (Product product, bool value) {
+                    if (!value) {
+                      addFavouriteProduct(context, product);
+                    } else {
+                      removeFavouriteProduct(context, product);
+                    }
+                  },
 
-                ///TODO get this mess to look a bit nicer
-                favouriteProducts: getFavouriteProducts(context),
-                onProductCartStateChange: (Product product, bool newValue) {
-                  if (newValue) {
-                    addItemToCart(
-                        context, CartItem(amount: 1, product: product));
-                  } else {
-                    removeFromCartByProduct(context, product);
-                  }
-                },
-                cartItemsInCart: getCartItemsAddedToCart(context, listen: true),
-              )
-            ],
+                  ///TODO get this mess to look a bit nicer
+                  favouriteProducts: getFavouriteProducts(context),
+                  onProductCartStateChange: (Product product, bool newValue) {
+                    if (newValue) {
+                      setState(() {
+                        cartItems.add(CartItem(amount: 1, product: product));
+                      });
+                    } else {
+                      setState(() {
+                        cartItems
+                            .removeWhere((item) => item.product == product);
+                      });
+                    }
+                  },
+                  cartItemsInCart: cartItems,
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+Future<dynamic> alertLeavingDialog(context) {
+  return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: const Text("Alert!"),
+            content: const Text(
+                "You are about to leave. When you first leave your cart you can not get it back. Are you sure you want to leave?"),
+            actions: [
+              IconButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  icon: const Text("Yes")),
+              IconButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  icon: const Text("No"))
+            ],
+          ));
 }
 
 class _ProductsGridView extends StatelessWidget {
@@ -220,8 +248,6 @@ class _ProductsGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(favouriteProducts.map((e) => e.hashCode));
-    print(products.map((e) => e.hashCode));
     return GridView.count(
       shrinkWrap: true,
       physics: const ScrollPhysics(),

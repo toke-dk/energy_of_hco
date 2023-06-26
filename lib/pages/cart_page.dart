@@ -2,49 +2,56 @@ import 'dart:async';
 
 import 'package:animated_check/animated_check.dart';
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/helpers/math.dart';
 import 'package:energy_of_hco/models/cart.dart';
-import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 
-class CartPage extends StatelessWidget {
-  const CartPage({Key? key}) : super(key: key);
+class CartPage extends StatefulWidget {
+  const CartPage(
+      {Key? key, required this.cartItems, required this.onCartItemsChange})
+      : super(key: key);
+  final List<CartItem> cartItems;
+
+  // tells the parent to change
+  final ValueChanged<List<CartItem>> onCartItemsChange;
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  late List<CartItem> cartItems;
+
+  @override
+  void initState() {
+    cartItems = widget.cartItems;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   void editItemAmount(context, CartItem item, int amount) {
-    return Provider.of<CartProvider>(context, listen: false)
-        .editItemAmount(item, amount);
+    cartItems.firstWhere((item) => item == item).amount += amount;
+    widget.onCartItemsChange(cartItems);
   }
 
   void removeCartItem(context, CartItem item) {
-    return Provider.of<CartProvider>(context, listen: false)
-        .removeCartItem(item);
-  }
-
-  List<CartItem> getAllItems(context) {
-    return Provider
-        .of<CartProvider>(context, listen: true)
-        .getItems;
-  }
-
-  int getItemsLength(context) {
-    return Provider
-        .of<CartProvider>(context, listen: true)
-        .itemsLength;
+    cartItems.remove(item);
+    widget.onCartItemsChange(cartItems);
   }
 
   double fees(context) {
-    return Provider
-        .of<CartProvider>(context, listen: true)
-        .serviceFeesInDkk;
+    return 8;
   }
 
   double subtotalPrice(context) {
-    return Provider
-        .of<CartProvider>(context, listen: true)
-        .getTotalItemsCost!;
+    return myDoubleCorrector(cartItems
+        .map((e) => e.amount * e.product.priceInDKK)
+        .reduce((value, element) => value + element));
   }
 
   double totalPrice(context) {
@@ -53,7 +60,9 @@ class CartPage extends StatelessWidget {
 
   void handleItemDeletion(context, item) {
     _deletionAlertDialog(context, handleRemove: () {
-      removeCartItem(context, item);
+      setState(() {
+        removeCartItem(context, item);
+      });
       Navigator.pop(context);
     });
   }
@@ -71,104 +80,102 @@ class CartPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(
                     left: 10, right: 10, top: 20, bottom: 65),
-                child: getAllItems(context).isNotEmpty
+                child: cartItems.isNotEmpty
                     ? Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Items",
-                          style: getAppTextTheme(context).headline5,
-                        ),
-                        Text(
-                          "${getItemsLength(context)
-                              .toString()} item${getItemsLength(context) > 1
-                              ? 's'
-                              : ''}",
-                          style: getAppTextTheme(context).subtitle1,
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    MyPaper(
-                      child: ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            CartItem currentIndexItem =
-                            getAllItems(context)[index];
-                            return ShowCartItem(
-                              cartItem: currentIndexItem,
-                              onItemAmountChange: (int changeAmount) {
-                                editItemAmount(context, currentIndexItem,
-                                    changeAmount);
-                              },
-                              handleCartItemRemove: () =>
-                                  handleItemDeletion(
-                                      context, currentIndexItem),
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                          const Padding(
-                            padding:
-                            EdgeInsets.symmetric(horizontal: 30),
-                            child: Divider(),
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Items",
+                                style: getAppTextTheme(context).headline5,
+                              ),
+                              Text(
+                                "${cartItems.length.toString()} item${cartItems.length > 1 ? 's' : ''}",
+                                style: getAppTextTheme(context).subtitle1,
+                              )
+                            ],
                           ),
-                          itemCount: getAllItems(context).length),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: const [
-                            Icon(Icons.add),
-                            SizedBox(
-                              width: 8,
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          MyPaper(
+                            child: ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  CartItem currentIndexItem = cartItems[index];
+                                  return ShowCartItem(
+                                    cartItem: currentIndexItem,
+                                    onItemAmountChange: (int changeAmount) {
+                                      setState(() {
+                                        editItemAmount(context,
+                                            currentIndexItem, changeAmount);
+                                      });
+                                    },
+                                    handleCartItemRemove: () =>
+                                        handleItemDeletion(
+                                            context, currentIndexItem),
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 30),
+                                      child: Divider(),
+                                    ),
+                                itemCount: cartItems.length),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.add),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text("Add more"),
+                                ],
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      getAppColorScheme(context).onPrimary),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30)))),
                             ),
-                            Text("Add more"),
-                          ],
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                getAppColorScheme(context).onPrimary),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(30)))),
-                      ),
-                    ),
-                    const Divider(
-                      height: 15,
-                      thickness: 1,
-                    ),
-                    Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 10),
-                        child: ShowOrderPrices(
-                          rowsAndColumns: [
-                            [
-                              "Subtotal",
-                              subtotalPrice(context).toString() + " kr."
-                            ],
-                            [
-                              "Service fee",
-                              fees(context).toString() + " kr."
-                            ],
-                            [
-                              "Total",
-                              totalPrice(context).toString() + " kr."
-                            ]
-                          ],
-                        )),
-                  ],
-                )
+                          ),
+                          const Divider(
+                            height: 15,
+                            thickness: 1,
+                          ),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: ShowOrderPrices(
+                                rowsAndColumns: [
+                                  [
+                                    "Subtotal",
+                                    subtotalPrice(context).toString() + " kr."
+                                  ],
+                                  [
+                                    "Service fee",
+                                    fees(context).toString() + " kr."
+                                  ],
+                                  [
+                                    "Total",
+                                    totalPrice(context).toString() + " kr."
+                                  ]
+                                ],
+                              )),
+                        ],
+                      )
                     : const SizedBox(),
               ),
             ),
@@ -198,8 +205,8 @@ class CartPage extends StatelessWidget {
                       onPrimary: getAppColorScheme(context).onPrimary,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(17),
-                            topRight: const Radius.circular(17)),
+                            topLeft: Radius.circular(17),
+                            topRight: Radius.circular(17)),
                       )),
                 ),
               ),
@@ -227,6 +234,7 @@ class _PlaceOrderDialogState extends State<_PlaceOrderDialog>
   @override
   void initState() {
     super.initState();
+
     /// todo make this add to the database and then quit
     Timer(const Duration(seconds: 1), () {
       setState(() {
@@ -238,12 +246,11 @@ class _PlaceOrderDialogState extends State<_PlaceOrderDialog>
       });
     });
 
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
 
-    _animation = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(
-            parent: _animationController, curve: Curves.easeInOutCirc));
+    _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+        parent: _animationController, curve: Curves.easeInOutCirc));
   }
 
   @override
@@ -256,7 +263,7 @@ class _PlaceOrderDialogState extends State<_PlaceOrderDialog>
           children: [
             Text(
               _loading ? 'Placing order...' : "ORDER CONFIRMED!",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -273,11 +280,10 @@ class _PlaceOrderDialogState extends State<_PlaceOrderDialog>
 }
 
 Future<dynamic> _deletionAlertDialog(context,
-    {required Function() handleRemove}) =>
+        {required Function() handleRemove}) =>
     showDialog(
         context: context,
-        builder: (context) =>
-            AlertDialog(
+        builder: (context) => AlertDialog(
               title: const Text("Heads up!"),
               content: const Text(
                   "You are about to remove this item. Are you sure you want to remove it?"),
@@ -305,21 +311,19 @@ class ShowOrderPrices extends StatelessWidget {
     return Column(
       children: List.generate(
           rowsAndColumns.length,
-              (columnIndex) =>
-              Row(
+          (columnIndex) => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
                     2,
-                        (rowIndex) =>
-                        Padding(
+                    (rowIndex) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 3),
                           child: Text(
                             rowsAndColumns[columnIndex][rowIndex],
                             style: TextStyle(
                                 fontWeight:
-                                columnIndex == rowsAndColumns.length - 1
-                                    ? FontWeight.bold
-                                    : null),
+                                    columnIndex == rowsAndColumns.length - 1
+                                        ? FontWeight.bold
+                                        : null),
                           ),
                         )),
               )),
@@ -328,10 +332,11 @@ class ShowOrderPrices extends StatelessWidget {
 }
 
 class ShowCartItem extends StatelessWidget {
-  const ShowCartItem({Key? key,
-    required this.cartItem,
-    required this.onItemAmountChange,
-    required this.handleCartItemRemove})
+  const ShowCartItem(
+      {Key? key,
+      required this.cartItem,
+      required this.onItemAmountChange,
+      required this.handleCartItemRemove})
       : super(key: key);
 
   final CartItem cartItem;
@@ -394,8 +399,7 @@ class ShowCartItem extends StatelessWidget {
                     Text(cartItem.amount.toString()),
                     _MyRoundedButton(
                       icon: Icons.remove,
-                      onTap: () =>
-                      cartItem.amount - 1 <= 0
+                      onTap: () => cartItem.amount - 1 <= 0
                           ? handleCartItemRemove()
                           : onItemAmountChange(-1),
                     ),
