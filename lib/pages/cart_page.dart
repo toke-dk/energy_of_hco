@@ -68,7 +68,7 @@ class _CartPageState extends State<CartPage> {
 
   User getCurrentUser(context) =>
       Provider
-          .of<UserProvider>(context, listen: false)
+          .of<UsersProvider>(context, listen: false)
           .getCurrentUser!;
 
   @override

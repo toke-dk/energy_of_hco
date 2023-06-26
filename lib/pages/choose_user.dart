@@ -125,7 +125,7 @@ class _ChooseUserState extends State<ChooseUser> {
                       rows: getAllUsers(context).map((user) {
                         return DataRow(
                             onSelectChanged: (_) {
-                              Provider.of<UserProvider>(context, listen: false)
+                              Provider.of<UsersProvider>(context, listen: false)
                                   .setCurrentUser(user);
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => AddItems(dateToAddOrder: widget.dateChosen,),

@@ -25,17 +25,17 @@ class _AddItemsState extends State<AddItems> {
   }
 
   void addFavouriteProduct(context, Product product) {
-    Provider.of<UserProvider>(context, listen: false)
+    Provider.of<UsersProvider>(context, listen: false)
         .addFavouriteProduct(product);
   }
 
   void removeFavouriteProduct(context, Product product) {
-    Provider.of<UserProvider>(context, listen: false)
+    Provider.of<UsersProvider>(context, listen: false)
         .removeFavouriteProduct(product);
   }
 
   List<Product> getFavouriteProducts(context) {
-    return Provider.of<UserProvider>(context, listen: true)
+    return Provider.of<UsersProvider>(context, listen: true)
         .getFavouriteProducts;
   }
 

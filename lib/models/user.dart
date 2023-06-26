@@ -11,9 +11,6 @@ class UsersProvider extends ChangeNotifier {
   void addUser(User user) {
     _users.add(user);
   }
-}
-
-class UserProvider extends ChangeNotifier {
   
   /// User
   static User? _currentUser;
