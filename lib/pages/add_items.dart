@@ -76,11 +76,16 @@ class _AddItemsState extends State<AddItems> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        bool? wantToLeave = await alertLeavingDialog(context);
-        if (wantToLeave == true) {
+        if (cart.cartItems.isNotEmpty) {
+          bool? wantToLeave = await alertLeavingDialog(context);
+          if (wantToLeave == true) {
+            return true;
+          }
+          return false;
+        } else {
           return true;
         }
-        return false;
+
       },
       child: Scaffold(
         appBar: AppBar(
