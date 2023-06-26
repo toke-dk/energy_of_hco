@@ -15,18 +15,24 @@ class ChooseUser extends StatefulWidget {
 }
 
 class _ChooseUserState extends State<ChooseUser> {
-  User testUser = User(
-      firstName: "Toke",
-      lastName: "Tester",
-      energyPoints: 100,
-      favouriteProducts: []);
 
-  late List<User> allUsers;
+  void testUserInitializer(context){
+    final User testUser = User(
+        firstName: "Tester",
+        lastName: "User",
+        energyPoints: 100,
+        favouriteProducts: []);
+    if (!getAllUsers(context, listen: false).map((e) => e.firstName).contains("Tester")) {
+      Provider.of<UsersProvider>(context, listen: false).addUser(testUser);
+    }
+  }
+
+  List<User> getAllUsers(context, {bool? listen}) =>
+      Provider.of<UsersProvider>(context, listen: listen ?? true).getUsers;
 
   @override
   void initState() {
-    Provider.of<UsersProvider>(context, listen: false).addUser(testUser);
-    allUsers = Provider.of<UsersProvider>(context, listen: false).getUsers;
+    testUserInitializer(context);
     super.initState();
   }
 
@@ -115,7 +121,7 @@ class _ChooseUserState extends State<ChooseUser> {
                           ),
                         ))
                       ],
-                      rows: allUsers.map((user) {
+                      rows: getAllUsers(context).map((user) {
                         return DataRow(
                             onSelectChanged: (_) {
                               Provider.of<UserProvider>(context, listen: false)
