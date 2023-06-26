@@ -76,8 +76,8 @@ class _AddItemsState extends State<AddItems> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        bool wantToLeave = await alertLeavingDialog(context);
-        if (wantToLeave) {
+        bool? wantToLeave = await alertLeavingDialog(context);
+        if (wantToLeave == true) {
           return true;
         }
         return false;
