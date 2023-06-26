@@ -9,39 +9,31 @@ import 'package:flutter/material.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage(
-      {Key? key, required this.cartItems, required this.onCartItemsChange})
+      {Key? key, required this.cart, required this.onCartItemsChange})
       : super(key: key);
-  final List<CartItem> cartItems;
+  final CartModel cart;
 
   // tells the parent to change
-  final ValueChanged<List<CartItem>> onCartItemsChange;
+  final ValueChanged<CartModel> onCartItemsChange;
 
   @override
   State<CartPage> createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
-  late List<CartItem> cartItems;
-
-  @override
-  void initState() {
-    cartItems = widget.cartItems;
-    super.initState();
-  }
-
   @override
   void dispose() {
     super.dispose();
   }
 
   void editItemAmount(context, CartItem item, int amount) {
-    cartItems.firstWhere((item) => item == item).amount += amount;
-    widget.onCartItemsChange(cartItems);
+    widget.cart.changeItemAmount(item, amount);
+    widget.onCartItemsChange(widget.cart);
   }
 
   void removeCartItem(context, CartItem item) {
-    cartItems.remove(item);
-    widget.onCartItemsChange(cartItems);
+    widget.cart.removeItem(item);
+    widget.onCartItemsChange(widget.cart);
   }
 
   double fees(context) {
@@ -49,9 +41,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   double subtotalPrice(context) {
-    return myDoubleCorrector(cartItems
-        .map((e) => e.amount * e.product.priceInDKK)
-        .reduce((value, element) => value + element));
+    return widget.cart.productsPrice;
   }
 
   double totalPrice(context) {
@@ -80,7 +70,7 @@ class _CartPageState extends State<CartPage> {
               child: Padding(
                 padding: const EdgeInsets.only(
                     left: 10, right: 10, top: 20, bottom: 65),
-                child: cartItems.isNotEmpty
+                child: widget.cart.cartItems.isNotEmpty
                     ? Column(
                         children: [
                           Row(
@@ -92,7 +82,7 @@ class _CartPageState extends State<CartPage> {
                                 style: getAppTextTheme(context).headline5,
                               ),
                               Text(
-                                "${cartItems.length.toString()} item${cartItems.length > 1 ? 's' : ''}",
+                                "${widget.cart.cartItems.length} item${widget.cart.cartItems.length > 1 ? 's' : ''}",
                                 style: getAppTextTheme(context).subtitle1,
                               )
                             ],
@@ -105,7 +95,7 @@ class _CartPageState extends State<CartPage> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  CartItem currentIndexItem = cartItems[index];
+                                  CartItem currentIndexItem = widget.cart.cartItems[index];
                                   return ShowCartItem(
                                     cartItem: currentIndexItem,
                                     onItemAmountChange: (int changeAmount) {
@@ -125,7 +115,7 @@ class _CartPageState extends State<CartPage> {
                                           EdgeInsets.symmetric(horizontal: 30),
                                       child: Divider(),
                                     ),
-                                itemCount: cartItems.length),
+                                itemCount: widget.cart.cartItems.length),
                           ),
                           SizedBox(
                             width: double.infinity,

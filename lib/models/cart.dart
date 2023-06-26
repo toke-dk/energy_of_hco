@@ -15,13 +15,45 @@ class CartItem {
 
   get totalPriceForItem => myDoubleCorrector(amount * product.priceInDKK);
 
-  void changeAmount(int newAmount) => amount += newAmount;
+  void changeAmount(int newAmount) {
+    amount += newAmount;
+  }
 }
 
-class Cart extends ChangeNotifier {
+class CartModel extends ChangeNotifier {
   List<CartItem> cartItems;
 
-  Cart({
+  CartModel({
     required this.cartItems,
   });
+
+  double get productsPrice =>
+      cartItems.isNotEmpty
+          ? myDoubleCorrector(cartItems
+          .map((item) => item.amount * item.product.priceInDKK)
+          .reduce((value, element) => value + element))
+          : 0;
+
+  int get allProducts =>
+      cartItems.isNotEmpty
+          ? cartItems
+          .map((e) => e.amount)
+          .reduce((value, element) => value + element)
+          : 0;
+
+  void addItem(CartItem item) {
+    cartItems.add(item);
+  }
+
+  void removeItem(CartItem item) {
+    cartItems.remove(item);
+  }
+
+  void removeItemByProduct(Product product) {
+    cartItems.removeWhere((item) => item.product == product);
+  }
+
+  void changeItemAmount(CartItem item, int newAmount) {
+    item.changeAmount(newAmount);
+  }
 }

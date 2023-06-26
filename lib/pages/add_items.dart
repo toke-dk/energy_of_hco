@@ -17,7 +17,7 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
-  List<CartItem> cartItems = [];
+  CartModel cart = CartModel(cartItems: []);
 
   List<Product> getAllProducts(context) {
     return Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
@@ -91,20 +91,18 @@ class _AddItemsState extends State<AddItems> {
                 IconButton(
                   icon: const Icon(Icons.shopping_basket),
                   onPressed: () {
-                    cartItems.isNotEmpty
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CartPage(
-                                      cartItems: cartItems,
-                                      onCartItemsChange:
-                                          (List<CartItem> newCartItems) {
-                                        setState(() {
-                                          cartItems = newCartItems;
-                                        });
-                                      },
-                                    )))
-                        : null;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CartPage(
+                                  cart: cart,
+                                  onCartItemsChange:
+                                      (CartModel newCartItems) {
+                                    setState(() {
+                                      cart = newCartItems;
+                                    });
+                                  },
+                                )));
                   },
                 ),
                 Positioned(
@@ -122,12 +120,7 @@ class _AddItemsState extends State<AddItems> {
                     child: FittedBox(
                         fit: BoxFit.contain,
                         child: Text(
-                          cartItems.isNotEmpty
-                              ? cartItems
-                                  .map((e) => e.amount)
-                                  .reduce((value, element) => value + element)
-                                  .toString()
-                              : 0.toString(),
+                          cart.allProducts.toString(),
                         )),
                   ),
                 ),
@@ -188,16 +181,15 @@ class _AddItemsState extends State<AddItems> {
                   onProductCartStateChange: (Product product, bool newValue) {
                     if (newValue) {
                       setState(() {
-                        cartItems.add(CartItem(amount: 1, product: product));
+                        cart.addItem(CartItem(amount: 1, product: product));
                       });
                     } else {
                       setState(() {
-                        cartItems
-                            .removeWhere((item) => item.product == product);
+                        cart.removeItemByProduct(product);
                       });
                     }
                   },
-                  cartItemsInCart: cartItems,
+                  cartItemsInCart: cart.cartItems,
                 )
               ],
             ),
