@@ -85,7 +85,6 @@ class _AddItemsState extends State<AddItems> {
         } else {
           return true;
         }
-
       },
       child: Scaffold(
         appBar: AppBar(
@@ -95,21 +94,24 @@ class _AddItemsState extends State<AddItems> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.shopping_basket),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CartPage(
-                                  cart: cart,
-                                  onCartItemsChange:
-                                      (CartModel newCartItems) {
-                                    setState(() {
-                                      cart = newCartItems;
-                                    });
-                                  },
-                                )));
-                  },
+                  onPressed: cart.cartItems.isNotEmpty
+                      ? () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CartPage(
+                                        cart: cart,
+                                        onCartItemsChange:
+                                            (CartModel newCartItems) {
+                                          setState(() {
+                                            cart = newCartItems;
+                                          });
+                                        },
+                                      )));
+                        }
+                      : null,
                 ),
+                cart.cartItems.isNotEmpty ?
                 Positioned(
                   right: 8,
                   top: 8,
@@ -128,7 +130,7 @@ class _AddItemsState extends State<AddItems> {
                           cart.allProducts.toString(),
                         )),
                   ),
-                ),
+                ) : SizedBox(),
               ],
             ),
           ],
