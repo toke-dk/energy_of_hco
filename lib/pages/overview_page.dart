@@ -1,6 +1,8 @@
+import 'package:energy_of_hco/constants/fees.dart';
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:energy_of_hco/pages/choose_user.dart';
 import 'package:energy_of_hco/widgets/days_scroll.dart';
+import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/total_orders.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,14 @@ class OverView extends StatefulWidget {
 
 class _OverViewState extends State<OverView> {
   DateTime selectedDay = DateTime.now();
+  List<String> items = ["Card-view", "List-view"];
+  String currentItem = "Card-view";
+
+  void handleChange(String newString) {
+    setState(() {
+      currentItem = newString;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +37,9 @@ class _OverViewState extends State<OverView> {
         onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ChooseUser(dateChosen: selectedDay,))),
+                builder: (context) => ChooseUser(
+                      dateChosen: selectedDay,
+                    ))),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -39,14 +51,26 @@ class _OverViewState extends State<OverView> {
                   setState(() => selectedDay = newDate),
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
+                padding: EdgeInsets.symmetric(horizontal: kAppWidthPadding),
                 child: Text(
                   "Total orders",
                   style: getAppTextTheme(context).headline5,
                 )),
             TotalOrders(
               date: selectedDay,
-            )
+            ),
+            Padding(
+              padding: EdgeInsets.all(kAppWidthPadding),
+              child: Text(
+                "Pending and complete",
+                style: getAppTextTheme(context).headline5,
+              ),
+            ),
+            MyHorizontalListView(
+                chosenItems: [currentItem],
+                onChange: (val) => handleChange(val),
+                allItems: items,
+                allTitles: items)
           ],
         ),
       ),

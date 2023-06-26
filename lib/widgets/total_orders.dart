@@ -22,10 +22,11 @@ class TotalOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 230,
-      child: ListView.separated(
+      child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             Order currentIndexOrder = ordersForDay(context)[index];
+            int amountOfProducts = currentIndexOrder.cart.allProducts;
             return Center(
               child: Column(
                 children: [
@@ -34,8 +35,7 @@ class TotalOrders extends StatelessWidget {
                           vertical: 14, horizontal: 10),
                       child: ShowProductDetails(
                           title: currentIndexOrder.user.firstName,
-                          subTitle: currentIndexOrder.cart.cartItems.length
-                              .toString(),
+                          subTitle: amountOfProducts.toString() + " product${amountOfProducts!=1 ? 's' : ''}",
                           productPrice: currentIndexOrder.totalPrice.toString(),
                           optionIcon: Icons.edit,
                           productImage: currentIndexOrder
@@ -44,9 +44,6 @@ class TotalOrders extends StatelessWidget {
               ),
             );
           },
-          separatorBuilder: (context, idex) => const SizedBox(
-                width: 19,
-              ),
           itemCount: ordersForDay(context).length),
     );
   }
