@@ -118,22 +118,11 @@ class _ChooseUserState extends State<ChooseUser> {
                       rows: allUsers.map((user) {
                         return DataRow(
                             onSelectChanged: (_) {
-                              Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => MultiProvider(
-                                      providers: [
-                                        ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                FavouriteProductsProvider()),
-                                        ChangeNotifierProvider(
-                                            create: (BuildContext context) =>
-                                                ProductsNotifier()),
-                                      ],
-                                      child: AddItems(
-                                        user: user,
-                                      ),
-                                    ),
-                                  ));
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .setCurrentUser(user);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const AddItems(),
+                              ));
                             },
                             cells: [
                               DataCell(Text(user.generateFullName)),

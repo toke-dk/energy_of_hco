@@ -10,22 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddItems extends StatefulWidget {
-  const AddItems({Key? key, required this.user}) : super(key: key);
-
-  final User user;
+  const AddItems({Key? key}) : super(key: key);
 
   @override
   State<AddItems> createState() => _AddItemsState();
 }
 
 class _AddItemsState extends State<AddItems> {
-  late List<Product> allProducts;
 
-  @override
-  void initState() {
-    allProducts =
-        Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
-    super.initState();
+  List<Product> getAllProducts(context){
+    return Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
   }
 
   List<CartItem> getCartItemsAddedToCart(context, {required bool listen}) {
@@ -46,17 +40,17 @@ class _AddItemsState extends State<AddItems> {
   }
 
   void addFavouriteProduct(context, Product product) {
-    Provider.of<FavouriteProductsProvider>(context, listen: false)
+    Provider.of<UserProvider>(context, listen: false)
         .addFavouriteProduct(product);
   }
 
   void removeFavouriteProduct(context, Product product) {
-    Provider.of<FavouriteProductsProvider>(context, listen: false)
+    Provider.of<UserProvider>(context, listen: false)
         .removeFavouriteProduct(product);
   }
 
-  List<Product> getFavouriteProducts(context, bool listen) {
-    return Provider.of<FavouriteProductsProvider>(context, listen: listen)
+  List<Product> getFavouriteProducts(context) {
+    return Provider.of<UserProvider>(context, listen: true)
         .getFavouriteProducts;
   }
 
@@ -75,16 +69,15 @@ class _AddItemsState extends State<AddItems> {
     List<Product> topCategoryProductListFiltered;
     switch (topCategoryChosen) {
       case TopCategories.all:
-        topCategoryProductListFiltered = allProducts;
+        topCategoryProductListFiltered = getAllProducts(context);
         break;
       case TopCategories.favourite:
         topCategoryProductListFiltered =
-            Provider.of<FavouriteProductsProvider>(context, listen: true)
-                .getFavouriteProducts;
+            getFavouriteProducts(context);
         break;
       case TopCategories.bestSelling:
         topCategoryProductListFiltered =
-            allProducts.where((e) => e.isBestSelling == true).toList();
+            getAllProducts(context).where((e) => e.isBestSelling == true).toList();
         break;
     }
     if (brandsChosen.isEmpty) return topCategoryProductListFiltered;
@@ -186,7 +179,7 @@ class _AddItemsState extends State<AddItems> {
                 },
 
                 ///TODO get this mess to look a bit nicer
-                favouriteProducts: getFavouriteProducts(context, true),
+                favouriteProducts: getFavouriteProducts(context),
                 onProductCartStateChange: (Product product, bool newValue) {
                   if (newValue) {
                     addItemToCart(
@@ -227,6 +220,8 @@ class _ProductsGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(favouriteProducts.map((e) => e.hashCode));
+    print(products.map((e) => e.hashCode));
     return GridView.count(
       shrinkWrap: true,
       physics: const ScrollPhysics(),

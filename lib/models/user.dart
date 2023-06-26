@@ -13,18 +13,27 @@ class UsersProvider extends ChangeNotifier {
   }
 }
 
-class FavouriteProductsProvider extends ChangeNotifier {
-  final List<Product> _products = <Product>[];
-
-  List<Product> get getFavouriteProducts => UnmodifiableListView(_products);
+class UserProvider extends ChangeNotifier {
+  
+  /// User
+  static User? _currentUser;
+  User? get getCurrentUser => _currentUser;
+  
+  void setCurrentUser(User newUser){
+    _currentUser=newUser;
+    notifyListeners();
+  }
+  
+  /// Favourite Products
+  List<Product> get getFavouriteProducts => UnmodifiableListView(_currentUser!.getFavouriteProducts);
 
   void addFavouriteProduct(Product product) {
-    _products.add(product);
+    _currentUser?.addFavouriteProduct(product);
     notifyListeners();
   }
 
   void removeFavouriteProduct(Product product) {
-    _products.remove(product);
+    _currentUser?.removeFavouriteProduct(product);
     notifyListeners();
   }
 }
@@ -44,4 +53,14 @@ class User {
   String get generateFullName => "$firstName $lastName";
 
   String get energyPointsAsString => energyPoints.toString();
+  
+  List<Product> get getFavouriteProducts => favouriteProducts;
+  
+  void addFavouriteProduct(Product product) {
+    favouriteProducts.add(product);
+  }
+  
+  void removeFavouriteProduct(Product product) {
+    favouriteProducts.remove(product);
+  }
 }

@@ -21,7 +21,7 @@ class Product {
   });
 }
 
-class ProductsNotifier extends ChangeNotifier {
+class ProductsNotifier {
   final List<Product> _allProducts = [
     Product(
         name: "Monster top rank",
