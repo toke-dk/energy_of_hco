@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChooseUser extends StatefulWidget {
-  const ChooseUser({Key? key}) : super(key: key);
+  const ChooseUser({Key? key, required this.dateChosen}) : super(key: key);
+  final DateTime dateChosen;
 
   @override
   State<ChooseUser> createState() => _ChooseUserState();
@@ -127,7 +128,7 @@ class _ChooseUserState extends State<ChooseUser> {
                               Provider.of<UserProvider>(context, listen: false)
                                   .setCurrentUser(user);
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const AddItems(),
+                                builder: (context) => AddItems(dateToAddOrder: widget.dateChosen,),
                               ));
                             },
                             cells: [

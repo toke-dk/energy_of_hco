@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddItems extends StatefulWidget {
-  const AddItems({Key? key}) : super(key: key);
+  const AddItems({Key? key, required this.dateToAddOrder}) : super(key: key);
+  final DateTime dateToAddOrder;
 
   @override
   State<AddItems> createState() => _AddItemsState();
@@ -107,30 +108,32 @@ class _AddItemsState extends State<AddItems> {
                                             cart = newCartItems;
                                           });
                                         },
+                                        dateForOrder: widget.dateToAddOrder,
                                       )));
                         }
                       : null,
                 ),
-                cart.cartItems.isNotEmpty ?
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    constraints: const BoxConstraints(
-                      maxHeight: 15,
-                      maxWidth: 15,
-                      minHeight: 15,
-                      minWidth: 15,
-                    ),
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.red),
-                    child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          cart.allProducts.toString(),
-                        )),
-                  ),
-                ) : SizedBox(),
+                cart.cartItems.isNotEmpty
+                    ? Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            maxHeight: 15,
+                            maxWidth: 15,
+                            minHeight: 15,
+                            minWidth: 15,
+                          ),
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.red),
+                          child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Text(
+                                cart.allProducts.toString(),
+                              )),
+                        ),
+                      )
+                    : SizedBox(),
               ],
             ),
           ],

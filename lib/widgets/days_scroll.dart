@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class DaysScroll extends StatefulWidget {
-  const DaysScroll({Key? key, required this.initialDate}) : super(key: key);
+  const DaysScroll({Key? key, required this.initialDate, this.onDateChange})
+      : super(key: key);
   final DateTime initialDate;
+  final Function(DateTime)? onDateChange;
 
   @override
   _DaysScrollState createState() => _DaysScrollState();
@@ -98,6 +100,9 @@ class _DaysScrollState extends State<DaysScroll> {
                               setState(() {
                                 _selectedDate = thisIndexDate;
                               });
+                              widget.onDateChange != null
+                                  ? widget.onDateChange!(_selectedDate)
+                                  : null;
                             },
                             child: Container(
                               padding: const EdgeInsets.all(5),

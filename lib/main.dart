@@ -27,6 +27,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (BuildContext context) => UserProvider()),
         ChangeNotifierProvider(
+            create: (BuildContext context) => UsersProvider()),
+        ChangeNotifierProvider(
           create: (context) => OrderProvider(),
         )
       ],
@@ -76,24 +78,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ChangeNotifierProvider(
-                    create: (BuildContext context) => UsersProvider(),
-                    child: const ChooseUser()))),
-      ),
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-        ),
-      ),
-      body: const SingleChildScrollView(
-        child: OverView(),
-      ),
-    );
+    return const OverView();
   }
 }

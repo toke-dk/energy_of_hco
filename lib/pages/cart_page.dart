@@ -13,9 +13,10 @@ import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage(
-      {Key? key, required this.cart, required this.onCartItemsChange})
+      {Key? key, required this.cart, required this.onCartItemsChange, required this.dateForOrder})
       : super(key: key);
   final CartModel cart;
+  final DateTime dateForOrder;
 
   // tells the parent to change
   final ValueChanged<CartModel> onCartItemsChange;
@@ -201,7 +202,7 @@ class _CartPageState extends State<CartPage> {
                                           totalPrice: totalPrice(context),
                                           user: getCurrentUser(context),
                                           cart: widget.cart,
-                                          date: DateTime.now()));
+                                          date: widget.dateForOrder));
                                   return Navigator.popUntil(context, (route) => route.isFirst);
                                 }));
                   },

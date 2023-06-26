@@ -1,28 +1,54 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
+import 'package:energy_of_hco/pages/choose_user.dart';
 import 'package:energy_of_hco/widgets/days_scroll.dart';
 import 'package:energy_of_hco/widgets/total_orders.dart';
 import 'package:flutter/material.dart';
 
-class OverView extends StatelessWidget {
+class OverView extends StatefulWidget {
   const OverView({Key? key}) : super(key: key);
 
   @override
+  State<OverView> createState() => _OverViewState();
+}
+
+class _OverViewState extends State<OverView> {
+  DateTime selectedDay = DateTime.now();
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DaysScroll(
-            initialDate: DateTime.now(),
-          ),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Text(
-                "Total orders",
-                style: getAppTextTheme(context).headline5,
-              )),
-          const TotalOrders()
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Overview",
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChooseUser(dateChosen: selectedDay,))),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DaysScroll(
+              initialDate: selectedDay,
+              onDateChange: (DateTime newDate) =>
+                  setState(() => selectedDay = newDate),
+            ),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "Total orders",
+                  style: getAppTextTheme(context).headline5,
+                )),
+            TotalOrders(
+              date: selectedDay,
+            )
+          ],
+        ),
       ),
     );
   }
