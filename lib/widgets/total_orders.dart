@@ -5,17 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TotalOrders extends StatelessWidget {
-  const TotalOrders({Key? key, required this.date}) : super(key: key);
-  final DateTime date;
+  const TotalOrders({Key? key,}) : super(key: key);
 
-  List<Order> getOrders(context) {
+  List<Order> getOrdersForDay(context) {
     return Provider.of<OrdersProvider>(context).getOrdersForDay;
-  }
-
-  List<Order> ordersForDay(context) {
-    return getOrders(context)
-        .where((Order order) => order.date.isSameDate(date))
-        .toList();
   }
 
   @override
@@ -25,7 +18,7 @@ class TotalOrders extends StatelessWidget {
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            Order currentIndexOrder = ordersForDay(context)[index];
+            Order currentIndexOrder = getOrdersForDay(context)[index];
             int amountOfProducts = currentIndexOrder.cart.allProducts;
             return Center(
               child: Column(
@@ -46,7 +39,7 @@ class TotalOrders extends StatelessWidget {
               ),
             );
           },
-          itemCount: ordersForDay(context).length),
+          itemCount: getOrdersForDay(context).length),
     );
   }
 }

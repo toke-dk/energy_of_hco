@@ -67,8 +67,7 @@ class _OverViewState extends State<OverView> {
                   "Total orders",
                   style: getAppTextTheme(context).headline5,
                 )),
-            TotalOrders(
-              date: getDateForOrders(),
+            const TotalOrders(
             ),
             Padding(
               padding: EdgeInsets.all(kAppWidthPadding),
@@ -90,7 +89,7 @@ class _OverViewState extends State<OverView> {
               alignment: Alignment.center,
                     child: const _OrdersAsListView(orders: [],)
                   )
-                : TotalOrders(date: getDateForOrders()),
+                : const TotalOrders(),
           ],
         ),
       ),
