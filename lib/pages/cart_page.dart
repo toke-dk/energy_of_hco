@@ -63,7 +63,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   void placeOrder(context, Order order) {
-    Provider.of<OrderProvider>(context, listen: false).addOrder(order);
+    Provider.of<OrdersProvider>(context, listen: false).addOrderForCurDay(order);
   }
 
   User getCurrentUser(context) =>

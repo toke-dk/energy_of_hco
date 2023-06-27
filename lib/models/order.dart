@@ -18,20 +18,30 @@ class Order {
   });
 }
 
-class OrderProvider extends ChangeNotifier {
-  final List<Order> _orders = [];
+class OrdersProvider extends ChangeNotifier {
+  
+  /// Date of orders
+  DateTime _currentDay = DateTime.now();
+  
+  DateTime get getCurrentDay => _currentDay;
+  
+  void changeDay(DateTime newDate){
+    _currentDay = newDate;
+    notifyListeners();
+  }
+  
+  /// Orders for day
+  final List<Order> _ordersForCurrentDate = [];
 
-  List<Order> get getOrders => UnmodifiableListView(_orders);
+  List<Order> get getOrdersForDay => UnmodifiableListView(_ordersForCurrentDate);
 
-  void addOrder(Order order){
-    _orders.add(order);
+  void addOrderForCurDay(Order order){
+    _ordersForCurrentDate.add(order);
     notifyListeners();
   }
 
-  void removeOrder(Order order){
-    _orders.remove(order);
+  void removeOrderForCurDay(Order order){
+    _ordersForCurrentDate.remove(order);
     notifyListeners();
   }
-
-
 }

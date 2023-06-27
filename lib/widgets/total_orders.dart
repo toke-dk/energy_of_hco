@@ -9,7 +9,7 @@ class TotalOrders extends StatelessWidget {
   final DateTime date;
 
   List<Order> getOrders(context) {
-    return Provider.of<OrderProvider>(context).getOrders;
+    return Provider.of<OrdersProvider>(context).getOrdersForDay;
   }
 
   List<Order> ordersForDay(context) {
