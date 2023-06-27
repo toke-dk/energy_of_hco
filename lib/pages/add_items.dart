@@ -265,7 +265,7 @@ class _ProductsGridView extends StatelessWidget {
                     onFavouriteChange(currentIndexProduct, value),
                 isFavourite: favouriteProducts.contains(currentIndexProduct),
                 subTitle: currentIndexProduct.sizeInCL.toString(),
-                productPrice: currentIndexProduct.priceInDKK.toString(),
+                productPrice: currentIndexProduct.priceExclDepositDKK.toString(),
                 optionIcon: _isItemInCart(currentIndexProduct)
                     ? Icons.check
                     : Icons.add_shopping_cart_outlined,

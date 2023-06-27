@@ -390,7 +390,7 @@ class ShowCartItem extends StatelessWidget {
                         .copyWith(fontSize: 16),
                   ),
                   Text(
-                    "${cartItem.product.priceInDKK.toString()} kr.",
+                    "${cartItem.product.priceExclDepositDKK.toString()} kr.",
                   )
                 ],
               ),

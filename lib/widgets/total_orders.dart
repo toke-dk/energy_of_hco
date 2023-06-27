@@ -21,7 +21,7 @@ class TotalOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 230,
+      height: 190,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
@@ -31,6 +31,8 @@ class TotalOrders extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
+                    height: 180,
+                      width: 180,
                       padding: const EdgeInsets.symmetric(
                           vertical: 14, horizontal: 10),
                       child: ShowProductDetails(

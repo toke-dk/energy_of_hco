@@ -13,7 +13,7 @@ class CartItem {
     required this.product,
   });
 
-  get totalPriceForItem => myDoubleCorrector(amount * product.priceInDKK);
+  get totalPriceForItem => myDoubleCorrector(amount * product.priceExclDepositDKK);
 
   void changeAmount(int newAmount) {
     amount += newAmount;
@@ -30,7 +30,7 @@ class CartModel extends ChangeNotifier {
   double get productsPrice =>
       cartItems.isNotEmpty
           ? myDoubleCorrector(cartItems
-          .map((item) => item.amount * item.product.priceInDKK)
+          .map((item) => item.amount * item.product.priceExclDepositDKK)
           .reduce((value, element) => value + element))
           : 0;
 
