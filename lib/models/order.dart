@@ -12,18 +12,33 @@ class Order {
   final CartModel cart;
   final double totalPrice;
   final DateTime date;
+  OrderProcesses orderProcess;
 
   Order({
+    required this.orderProcess,
     required this.totalPrice,
     required this.user,
     required this.cart,
     required this.date,
   });
+
+  void changeOrderProcess(OrderProcesses newProcess) {
+    orderProcess = newProcess;
+  }
 }
 
+enum OrderProcesses { ordered, bought, paid, delivered }
+
 class OrdersProvider extends ChangeNotifier {
+  /// Initialisation
+  void ordersProviderInit(){
+    _currentDay = DateTime.now();
+    _createShoppingFromOrdersForDay();
+    _sortShoppingList();
+  }
+
   /// Date of orders
-  DateTime _currentDay = DateTime.now();
+  late DateTime _currentDay;
 
   DateTime get getCurrentDay => _currentDay;
 
@@ -40,6 +55,8 @@ class OrdersProvider extends ChangeNotifier {
 
   void addOrderForCurDay(Order order) {
     _ordersForCurrentDate.add(order);
+    _shoppingList.addItemsFromOrder(order);
+    _sortShoppingList();
     notifyListeners();
   }
 
@@ -48,33 +65,50 @@ class OrdersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Shopping List Management
-  CartModel? _shoppingList;
-
-  CartModel get getShoppingList {
-    _createShoppingListForDay();
-    _sortShoppingList();
-    return _shoppingList!;
+  Order _getOrderFromCurrentDayOrders(Order order) {
+    return _ordersForCurrentDate.firstWhere((element) => element == order);
   }
 
-  void _createShoppingListForDay() {
-    _shoppingList = CartModel(cartItems: _ordersForCurrentDate
-        .map((order) => order.cart.cartItems.map((item) => item.product))
-        .expand((hype) => hype)
-        .toSet()
-        .toList()
-        .map((product) => CartItem(
-            product: product,
-            amount: _ordersForCurrentDate
-                .map((order) =>
-                    order.cart.cartItems.map((f) => f.product).contains(product)
+  CartItem _getItemFromShoppingList(CartItem item) {
+    return _shoppingList.cartItems.firstWhere((element) => element == item);
+  }
+
+  /// Shopping List Management
+  late CartModel _shoppingList;
+
+  CartModel get getShoppingList {return _shoppingList;}
+
+  void _createShoppingFromOrdersForDay() {
+    _shoppingList = CartModel(
+        cartItems: _ordersForCurrentDate
+            .map((order) => order.cart.cartItems.map((item) => item.product))
+            .expand((hype) => hype)
+            .toSet()
+            .toList()
+            .map((product) => CartItem(
+                product: product,
+                amount: _ordersForCurrentDate
+                    .map((order) => order.cart.cartItems
+                            .map((f) => f.product)
+                            .contains(product)
                         ? order.cart.getAmountByProduct(product)
                         : 0)
-                .reduce((a, b) => a + b)))
-        .toList());
+                    .reduce((a, b) => a + b)))
+            .toList());
   }
 
-  void _sortShoppingList(){
-    _shoppingList!.cartItems.sort((a,b)=>a.product.brand.displayName.compareTo(b.product.brand.displayName));
+  void _sortShoppingList() {
+    _shoppingList.cartItems.sort((a, b) =>
+        a.product.brand.displayName.compareTo(b.product.brand.displayName));
+  }
+
+  void changeOrderProcess(Order order, OrderProcesses newProcess) {
+    _getOrderFromCurrentDayOrders(order).changeOrderProcess(newProcess);
+    notifyListeners();
+  }
+
+  void changeShopListItemPurchase(CartItem item, int newAmount) {
+    _getItemFromShoppingList(item).changePurchasedAmount(newAmount);
+    notifyListeners();
   }
 }

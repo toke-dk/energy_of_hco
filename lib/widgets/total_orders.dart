@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TotalOrders extends StatelessWidget {
-  const TotalOrders({Key? key,}) : super(key: key);
+  const TotalOrders({Key? key, required this.orders,}) : super(key: key);
 
-  List<Order> getOrdersForDay(context) {
-    return Provider.of<OrdersProvider>(context).getOrdersForDay;
-  }
+  final List<Order> orders;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,7 @@ class TotalOrders extends StatelessWidget {
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            Order currentIndexOrder = getOrdersForDay(context)[index];
+            Order currentIndexOrder = orders[index];
             int amountOfProducts = currentIndexOrder.cart.allProducts;
             return Center(
               child: Column(
@@ -39,7 +37,7 @@ class TotalOrders extends StatelessWidget {
               ),
             );
           },
-          itemCount: getOrdersForDay(context).length),
+          itemCount: orders.length),
     );
   }
 }

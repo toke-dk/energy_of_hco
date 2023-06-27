@@ -20,6 +20,36 @@ class ChangeIntTile extends StatelessWidget {
         : getAppColorScheme(context).primary;
   }
 
+  bool canPass({required List<bool> conditions}) {
+    return conditions.every((e) => e == true);
+  }
+
+  bool get _conditionForPluPress {
+    if (maxVal != null){
+      if (intAmount + 1 <= maxVal!) {
+        return true;
+      }
+      return false;
+    }
+    if (onValueChange != null){
+      return true;
+    }
+    return false;
+  }
+
+  bool get _conditionForMinusPress {
+    if (maxVal != null) {
+      if (intAmount - 1 >= minVal!) {
+        return true;
+      }
+      return false;
+    }
+    if (onValueChange != null) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -28,19 +58,25 @@ class ChangeIntTile extends StatelessWidget {
         _MyRoundedButton(
           icon: Icons.add,
           color: getIconColor(context, maxVal),
-          onTap: () => onValueChange != null ? onValueChange!(1) : null,
+          onTap: () => _conditionForPluPress ? onValueChange!(1) : null,
         ),
-        maxVal != null ? Row(
-          children: [
-            Text(intAmount.toString()),
-            Text("/ " + maxVal.toString(),style: TextStyle(color: Theme.of(context).unselectedWidgetColor, fontSize: 10),),
-          ],
-        ) : Text(intAmount.toString()),
-
+        maxVal != null
+            ? Row(
+                children: [
+                  Text(intAmount.toString()),
+                  Text(
+                    "/ " + maxVal.toString(),
+                    style: TextStyle(
+                        color: Theme.of(context).unselectedWidgetColor,
+                        fontSize: 10),
+                  ),
+                ],
+              )
+            : Text(intAmount.toString()),
         _MyRoundedButton(
           color: getIconColor(context, minVal),
           icon: Icons.remove,
-          onTap: () => onValueChange != null ? onValueChange!(-1) : null,
+          onTap: () => _conditionForMinusPress ? onValueChange!(-1) : null,
         ),
       ],
     );
@@ -48,7 +84,8 @@ class ChangeIntTile extends StatelessWidget {
 }
 
 class _MyRoundedButton extends StatelessWidget {
-  const _MyRoundedButton({Key? key, required this.icon, required this.onTap, this.color})
+  const _MyRoundedButton(
+      {Key? key, required this.icon, required this.onTap, this.color})
       : super(key: key);
 
   final IconData icon;

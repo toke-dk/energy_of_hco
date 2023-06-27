@@ -33,17 +33,38 @@ class _OverViewState extends State<OverView> {
     return Provider.of<OrdersProvider>(context).getCurrentDay;
   }
 
+  CartModel getShoppingList() {
+    return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
+  }
+
+  List<Order> getOrdersForDay(context) {
+    return Provider.of<OrdersProvider>(context).getOrdersForDay;
+  }
+
   void changeCurrentDate(DateTime newDate) {
     return Provider.of<OrdersProvider>(context, listen: false)
         .changeDay(newDate);
   }
 
-  CartModel getShoppingList() {
-    return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
+  void changeOrderProcess(Order order, OrderProcesses newProcess) {
+    Provider.of<OrdersProvider>(context, listen: false)
+        .changeOrderProcess(order, newProcess);
+  }
+
+  void changeShopListItemPurchase(CartItem item, int newAmount) {
+    Provider.of<OrdersProvider>(context, listen: false)
+        .changeShopListItemPurchase(item, newAmount);
+  }
+
+  @override
+  void initState() {
+    Provider.of<OrdersProvider>(context, listen: false).ordersProviderInit();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(getShoppingList().cartItems.map((e) => e.amountPurchased));
     getShoppingList();
     return Scaffold(
       appBar: AppBar(
@@ -74,7 +95,9 @@ class _OverViewState extends State<OverView> {
                   "Total orders",
                   style: getAppTextTheme(context).headline5,
                 )),
-            const TotalOrders(),
+            TotalOrders(
+              orders: getOrdersForDay(context),
+            ),
             Padding(
               padding: EdgeInsets.all(kAppWidthPadding),
               child: Text(
@@ -95,9 +118,14 @@ class _OverViewState extends State<OverView> {
                     alignment: Alignment.center,
                     child: _OrdersAsListView(
                       items: getShoppingList(),
+                      onItemAmountChange: (CartItem item, int changedAmount) {
+                        changeShopListItemPurchase(item, changedAmount);
+                      },
                     ))
-                : const TotalOrders(),
-            SizedBox(
+                : TotalOrders(
+                    orders: getOrdersForDay(context),
+                  ),
+            const SizedBox(
               height: 100,
             )
           ],
@@ -108,9 +136,13 @@ class _OverViewState extends State<OverView> {
 }
 
 class _OrdersAsListView extends StatelessWidget {
-  const _OrdersAsListView({Key? key, required this.items}) : super(key: key);
+  const _OrdersAsListView(
+      {Key? key, required this.items, required this.onItemAmountChange})
+      : super(key: key);
 
   final CartModel items;
+
+  final Function(CartItem item, int changedAmount) onItemAmountChange;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +162,8 @@ class _OrdersAsListView extends StatelessWidget {
               padding: const EdgeInsets.only(top: 10),
               child: _MyListItem(
                 item: currentIndexItem,
-                amountBought: 1,
+                onPurchasedAmountChange: (int newAmount) =>
+                    onItemAmountChange(currentIndexItem, newAmount),
               ),
             );
           })),
@@ -154,10 +187,11 @@ class _OrdersAsListView extends StatelessWidget {
 }
 
 class _MyListItem extends StatelessWidget {
-  const _MyListItem({Key? key, required this.item, required this.amountBought})
+  const _MyListItem(
+      {Key? key, required this.item, required this.onPurchasedAmountChange})
       : super(key: key);
   final CartItem item;
-  final int amountBought;
+  final Function(int newAmount) onPurchasedAmountChange;
 
   @override
   Widget build(BuildContext context) {
@@ -203,8 +237,8 @@ class _MyListItem extends StatelessWidget {
         Expanded(
           flex: 3,
           child: ChangeIntTile(
-            onValueChange: (changeInt) => 1,
-            intAmount: 0,
+            onValueChange: (changeInt) => onPurchasedAmountChange(changeInt),
+            intAmount: item.amountPurchased ?? 0,
             maxVal: item.amount,
             minVal: 0,
           ),

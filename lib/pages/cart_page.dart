@@ -203,7 +203,8 @@ class _CartPageState extends State<CartPage> {
                                       totalPrice: totalPrice(context),
                                       user: getCurrentUser(context),
                                       cart: widget.cart,
-                                      date: widget.dateForOrder));
+                                      date: widget.dateForOrder,
+                                      orderProcess: OrderProcesses.ordered));
                               return Navigator.popUntil(
                                   context, (route) => route.isFirst);
                             }));
@@ -411,9 +412,10 @@ class ShowCartItem extends StatelessWidget {
                   onTap: () => handleCartItemRemove(),
                 ),
                 ChangeIntTile(
-                    onValueChange: (int changeVal) => cartItem.amount + changeVal <= 0
-                        ? handleCartItemRemove()
-                        : onItemAmountChange(changeVal),
+                    onValueChange: (int changeVal) =>
+                        cartItem.amount + changeVal <= 0
+                            ? handleCartItemRemove()
+                            : onItemAmountChange(changeVal),
                     intAmount: cartItem.amount)
               ],
             ),
