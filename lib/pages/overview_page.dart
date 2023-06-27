@@ -1,8 +1,10 @@
 import 'package:energy_of_hco/constants/fees.dart';
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:energy_of_hco/models/cart.dart';
+import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/order.dart';
 import 'package:energy_of_hco/pages/choose_user.dart';
+import 'package:energy_of_hco/widgets/change_int_widget.dart';
 import 'package:energy_of_hco/widgets/days_scroll.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
@@ -26,16 +28,17 @@ class _OverViewState extends State<OverView> {
       currentItem = newString;
     });
   }
-  
+
   DateTime getDateForOrders() {
     return Provider.of<OrdersProvider>(context).getCurrentDay;
   }
-  
-  void changeCurrentDate(DateTime newDate){
-    return Provider.of<OrdersProvider>(context, listen: false).changeDay(newDate);
+
+  void changeCurrentDate(DateTime newDate) {
+    return Provider.of<OrdersProvider>(context, listen: false)
+        .changeDay(newDate);
   }
 
-  List<CartItem> getShoppingList(){
+  List<CartItem> getShoppingList() {
     return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
   }
 
@@ -63,8 +66,7 @@ class _OverViewState extends State<OverView> {
           children: [
             DaysScroll(
               initialDate: getDateForOrders(),
-              onDateChange: (DateTime newDate) =>
-                  changeCurrentDate(newDate),
+              onDateChange: (DateTime newDate) => changeCurrentDate(newDate),
             ),
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: kAppWidthPadding),
@@ -72,8 +74,7 @@ class _OverViewState extends State<OverView> {
                   "Total orders",
                   style: getAppTextTheme(context).headline5,
                 )),
-            const TotalOrders(
-            ),
+            const TotalOrders(),
             Padding(
               padding: EdgeInsets.all(kAppWidthPadding),
               child: Text(
@@ -90,11 +91,15 @@ class _OverViewState extends State<OverView> {
             ),
             currentItem == "List-view"
                 ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              alignment: Alignment.center,
-                    child: _OrdersAsListView(items: getShoppingList(),)
-                  )
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.center,
+                    child: _OrdersAsListView(
+                      items: getShoppingList(),
+                    ))
                 : const TotalOrders(),
+            SizedBox(
+              height: 100,
+            )
           ],
         ),
       ),
@@ -110,7 +115,7 @@ class _OrdersAsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPaper(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -119,9 +124,16 @@ class _OrdersAsListView extends StatelessWidget {
             style: getAppTextTheme(context).headline6,
           ),
           Column(
-            children: List.generate(items.length, (index) => Text(items[index].product.name + items[index].amount.toString())),
-          ),
-          _MyListItem(item: null, amountBought: 1,)
+              children: List.generate(items.length, (index) {
+            CartItem currentIndexItem = items[index];
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: _MyListItem(
+                item: currentIndexItem,
+                amountBought: 1,
+              ),
+            );
+          })),
         ],
       ),
     );
@@ -129,15 +141,61 @@ class _OrdersAsListView extends StatelessWidget {
 }
 
 class _MyListItem extends StatelessWidget {
-  const _MyListItem({Key? key, required this.item, required this.amountBought}) : super(key: key);
-  final CartItem? item;
+  const _MyListItem({Key? key, required this.item, required this.amountBought})
+      : super(key: key);
+  final CartItem item;
   final int amountBought;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(Icons.check_circle_outline,color: getAppColorScheme(context).primary,),
+        Expanded(
+          flex: 2,
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: item.product.image,
+          ),
+        ),
+        Expanded(
+          flex: 7,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: EdgeInsets.only(right: 5),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.product.name,
+                      ),
+                      Text(
+                        "${item.product.brand.displayName}, ${item.product.sizeInCL}cL",
+                        style: getAppTextTheme(context).caption,
+                      )
+                    ],
+                  ),
+                  Text(
+                    " (${item.amount.toString()})",
+                    style: getAppTextTheme(context).subtitle1,
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: ChangeIntTile(
+            onValueChange: (changeInt) => 1,
+            intAmount: 0,
+            maxVal: item.amount,
+            minVal: 0,
+          ),
+        )
       ],
     );
   }
