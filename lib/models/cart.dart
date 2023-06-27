@@ -41,6 +41,10 @@ class CartModel extends ChangeNotifier {
           .reduce((value, element) => value + element)
           : 0;
 
+  int getAmountByProduct(Product product) {
+    return cartItems.firstWhere((element) => element.product==product).amount;
+  }
+
   void addItem(CartItem item) {
     cartItems.add(item);
   }

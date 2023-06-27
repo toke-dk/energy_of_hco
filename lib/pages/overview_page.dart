@@ -35,8 +35,13 @@ class _OverViewState extends State<OverView> {
     return Provider.of<OrdersProvider>(context, listen: false).changeDay(newDate);
   }
 
+  List<CartItem> getShoppingList(){
+    return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
+  }
+
   @override
   Widget build(BuildContext context) {
+    getShoppingList();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -87,7 +92,7 @@ class _OverViewState extends State<OverView> {
                 ? Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               alignment: Alignment.center,
-                    child: const _OrdersAsListView(orders: [],)
+                    child: _OrdersAsListView(items: getShoppingList(),)
                   )
                 : const TotalOrders(),
           ],
@@ -98,9 +103,9 @@ class _OverViewState extends State<OverView> {
 }
 
 class _OrdersAsListView extends StatelessWidget {
-  const _OrdersAsListView({Key? key, required this.orders}) : super(key: key);
+  const _OrdersAsListView({Key? key, required this.items}) : super(key: key);
 
-  final List<Order> orders;
+  final List<CartItem> items;
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +117,9 @@ class _OrdersAsListView extends StatelessWidget {
           Text(
             "Pending",
             style: getAppTextTheme(context).headline6,
+          ),
+          Column(
+            children: List.generate(items.length, (index) => Text(items[index].product.name + items[index].amount.toString())),
           ),
           _MyListItem(item: null, amountBought: 1,)
         ],
