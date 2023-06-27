@@ -38,7 +38,7 @@ class _OverViewState extends State<OverView> {
         .changeDay(newDate);
   }
 
-  List<CartItem> getShoppingList() {
+  CartModel getShoppingList() {
     return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
   }
 
@@ -110,7 +110,7 @@ class _OverViewState extends State<OverView> {
 class _OrdersAsListView extends StatelessWidget {
   const _OrdersAsListView({Key? key, required this.items}) : super(key: key);
 
-  final List<CartItem> items;
+  final CartModel items;
 
   @override
   Widget build(BuildContext context) {
@@ -124,8 +124,8 @@ class _OrdersAsListView extends StatelessWidget {
             style: getAppTextTheme(context).headline6,
           ),
           Column(
-              children: List.generate(items.length, (index) {
-            CartItem currentIndexItem = items[index];
+              children: List.generate(items.cartItems.length, (index) {
+            CartItem currentIndexItem = items.cartItems[index];
             return Padding(
               padding: const EdgeInsets.only(top: 10),
               child: _MyListItem(
@@ -134,6 +134,19 @@ class _OrdersAsListView extends StatelessWidget {
               ),
             );
           })),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            "Price",
+            style: getAppTextTheme(context).headline6,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Center(
+            child: Text(items.productsPrice.toString()),
+          )
         ],
       ),
     );

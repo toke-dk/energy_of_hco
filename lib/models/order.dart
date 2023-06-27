@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:energy_of_hco/models/cart.dart';
+import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,15 +49,16 @@ class OrdersProvider extends ChangeNotifier {
   }
 
   /// Shopping List Management
-  List<CartItem> _shoppingList = [];
+  CartModel? _shoppingList;
 
-  List<CartItem> get getShoppingList {
+  CartModel get getShoppingList {
     _createShoppingListForDay();
-    return UnmodifiableListView(_shoppingList);
+    _sortShoppingList();
+    return _shoppingList!;
   }
 
   void _createShoppingListForDay() {
-    _shoppingList = _ordersForCurrentDate
+    _shoppingList = CartModel(cartItems: _ordersForCurrentDate
         .map((order) => order.cart.cartItems.map((item) => item.product))
         .expand((hype) => hype)
         .toSet()
@@ -69,6 +71,10 @@ class OrdersProvider extends ChangeNotifier {
                         ? order.cart.getAmountByProduct(product)
                         : 0)
                 .reduce((a, b) => a + b)))
-        .toList();
+        .toList());
+  }
+
+  void _sortShoppingList(){
+    _shoppingList!.cartItems.sort((a,b)=>a.product.brand.displayName.compareTo(b.product.brand.displayName));
   }
 }
