@@ -34,9 +34,8 @@ class OrdersProvider extends ChangeNotifier {
   /// Orders for day
   final List<Order> _ordersForCurrentDate = [];
 
-  List<Order> get getOrdersForDay =>
-      UnmodifiableListView(_ordersForCurrentDate.where((element) =>
-          element.date.isSameDate(_currentDay)));
+  List<Order> get getOrdersForDay => UnmodifiableListView(_ordersForCurrentDate
+      .where((element) => element.date.isSameDate(_currentDay)));
 
   void addOrderForCurDay(Order order) {
     _ordersForCurrentDate.add(order);
@@ -52,36 +51,24 @@ class OrdersProvider extends ChangeNotifier {
   List<CartItem> _shoppingList = [];
 
   List<CartItem> get getShoppingList {
-    _shoppingList = _createShoppingListForDay();
+    _createShoppingListForDay();
     return UnmodifiableListView(_shoppingList);
   }
 
-  List<CartItem> _createShoppingListForDay() {
-    List<Product> uniqueProducts = _ordersForCurrentDate
-        .map((e) => e.cart.cartItems.map((f) => f.product))
+  void _createShoppingListForDay() {
+    _shoppingList = _ordersForCurrentDate
+        .map((order) => order.cart.cartItems.map((item) => item.product))
         .expand((hype) => hype)
         .toSet()
+        .toList()
+        .map((product) => CartItem(
+            product: product,
+            amount: _ordersForCurrentDate
+                .map((order) =>
+                    order.cart.cartItems.map((f) => f.product).contains(product)
+                        ? order.cart.getAmountByProduct(product)
+                        : 0)
+                .reduce((a, b) => a + b)))
         .toList();
-    List<CartItem> items = [];
-    print("unique = ${uniqueProducts.map((e) => e.name)}");
-    for (var product in uniqueProducts) {
-      CartItem toAdd = CartItem(
-          product: product,
-          amount: _ordersForCurrentDate
-              .map((order) =>
-                  order.cart.cartItems.map((f) => f.product).contains(product)
-                      ? order.cart.getAmountByProduct(product)
-                      : 0)
-              .reduce((value, element) => value + element));
-      items.add(toAdd);
-      _shoppingList.add(toAdd);
-      print("the toadd ${toAdd.amount}");
-    }
-    print(items);
-    return items;
   }
-
-  void _addItemToShoppingList(CartItem item) {}
-
-  void _removeItemFromShoppingList(CartItem item) {}
 }
