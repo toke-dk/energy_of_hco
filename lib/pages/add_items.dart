@@ -18,7 +18,7 @@ class AddItems extends StatefulWidget {
 }
 
 class _AddItemsState extends State<AddItems> {
-  CartModel cart = CartModel(cartItems: []);
+  List<CartItem> cart = <CartItem>[];
 
   List<Product> getAllProducts(context) {
     return Provider.of<ProductsNotifier>(context, listen: false).geAllProducts;
@@ -77,7 +77,7 @@ class _AddItemsState extends State<AddItems> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (cart.cartItems.isNotEmpty) {
+        if (cart.isNotEmpty) {
           bool? wantToLeave = await alertLeavingDialog(context);
           if (wantToLeave == true) {
             return true;
@@ -95,7 +95,7 @@ class _AddItemsState extends State<AddItems> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.shopping_basket),
-                  onPressed: cart.cartItems.isNotEmpty
+                  onPressed: cart.isNotEmpty
                       ? () {
                           Navigator.push(
                               context,
@@ -103,7 +103,7 @@ class _AddItemsState extends State<AddItems> {
                                   builder: (context) => CartPage(
                                         cart: cart,
                                         onCartItemsChange:
-                                            (CartModel newCartItems) {
+                                            (List<CartItem> newCartItems) {
                                           setState(() {
                                             cart = newCartItems;
                                           });
@@ -113,7 +113,7 @@ class _AddItemsState extends State<AddItems> {
                         }
                       : null,
                 ),
-                cart.cartItems.isNotEmpty
+                cart.isNotEmpty
                     ? Positioned(
                         right: 8,
                         top: 8,
@@ -129,7 +129,7 @@ class _AddItemsState extends State<AddItems> {
                           child: FittedBox(
                               fit: BoxFit.contain,
                               child: Text(
-                                cart.allProducts.toString(),
+                                cart.amountOfProductsInItems.toString(),
                               )),
                         ),
                       )
@@ -199,7 +199,7 @@ class _AddItemsState extends State<AddItems> {
                       });
                     }
                   },
-                  cartItemsInCart: cart.cartItems,
+                  cartItemsInCart: cart,
                 )
               ],
             ),

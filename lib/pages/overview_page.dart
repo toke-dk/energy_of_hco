@@ -33,7 +33,7 @@ class _OverViewState extends State<OverView> {
     return Provider.of<OrdersProvider>(context).getCurrentDay;
   }
 
-  CartModel getShoppingList() {
+  List<CartItem> getShoppingList() {
     return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
   }
 
@@ -64,8 +64,7 @@ class _OverViewState extends State<OverView> {
 
   @override
   Widget build(BuildContext context) {
-    print(getShoppingList().cartItems.map((e) => e.amountPurchased));
-    getShoppingList();
+    /// maybe take this on:     getShoppingList();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -140,7 +139,7 @@ class _OrdersAsListView extends StatelessWidget {
       {Key? key, required this.items, required this.onItemAmountChange})
       : super(key: key);
 
-  final CartModel items;
+  final List<CartItem> items;
 
   final Function(CartItem item, int changedAmount) onItemAmountChange;
 
@@ -156,8 +155,8 @@ class _OrdersAsListView extends StatelessWidget {
             style: getAppTextTheme(context).headline6,
           ),
           Column(
-              children: List.generate(items.cartItems.length, (index) {
-            CartItem currentIndexItem = items.cartItems[index];
+              children: List.generate(items.length, (index) {
+            CartItem currentIndexItem = items[index];
             return Padding(
               padding: const EdgeInsets.only(top: 10),
               child: _MyListItem(
@@ -177,6 +176,8 @@ class _OrdersAsListView extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
+          /// TODO this does not take fees into account
+          /// I should give a total cost for the [Order] method
           Center(
             child: Text(items.productsPrice.toString()),
           )

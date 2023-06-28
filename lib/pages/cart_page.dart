@@ -19,11 +19,11 @@ class CartPage extends StatefulWidget {
       required this.onCartItemsChange,
       required this.dateForOrder})
       : super(key: key);
-  final CartModel cart;
+  final List<CartItem> cart;
   final DateTime dateForOrder;
 
   // tells the parent to change
-  final ValueChanged<CartModel> onCartItemsChange;
+  final ValueChanged<List<CartItem>> onCartItemsChange;
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -87,7 +87,7 @@ class _CartPageState extends State<CartPage> {
               child: Padding(
                 padding: const EdgeInsets.only(
                     left: 10, right: 10, top: 20, bottom: 65),
-                child: widget.cart.cartItems.isNotEmpty
+                child: widget.cart.isNotEmpty
                     ? Column(
                         children: [
                           Row(
@@ -99,7 +99,7 @@ class _CartPageState extends State<CartPage> {
                                 style: getAppTextTheme(context).headline5,
                               ),
                               Text(
-                                "${widget.cart.cartItems.length} item${widget.cart.cartItems.length > 1 ? 's' : ''}",
+                                "${widget.cart.length} item${widget.cart.length > 1 ? 's' : ''}",
                                 style: getAppTextTheme(context).subtitle1,
                               )
                             ],
@@ -113,7 +113,7 @@ class _CartPageState extends State<CartPage> {
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   CartItem currentIndexItem =
-                                      widget.cart.cartItems[index];
+                                      widget.cart[index];
                                   return ShowCartItem(
                                     cartItem: currentIndexItem,
                                     onItemAmountChange: (int changeAmount) {
@@ -133,7 +133,7 @@ class _CartPageState extends State<CartPage> {
                                           EdgeInsets.symmetric(horizontal: 30),
                                       child: Divider(),
                                     ),
-                                itemCount: widget.cart.cartItems.length),
+                                itemCount: widget.cart.length),
                           ),
                           SizedBox(
                             width: double.infinity,

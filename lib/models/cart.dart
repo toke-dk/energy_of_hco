@@ -32,56 +32,57 @@ class CartItem {
 
 /// Next day we are going to make a difference between the model and the actual
 /// thingy
-class CartModel extends ChangeNotifier {
-  List<CartItem> cartItems;
+extension CartItemListExtension on List<CartItem> {
 
-  CartModel({
-    required this.cartItems,
-  });
-
-  double get productsPrice => cartItems.isNotEmpty
-      ? myDoubleCorrector(cartItems
-          .map((item) => item.amount * item.product.priceExclDepositDKK)
+  double get productsPrice => isNotEmpty
+      ? myDoubleCorrector(map((item) => item.amount * item.product.priceExclDepositDKK)
           .reduce((value, element) => value + element))
       : 0;
 
-  int get allProducts => cartItems.isNotEmpty
-      ? cartItems
-          .map((e) => e.amount)
+  int get amountOfProductsInItems => isNotEmpty
+      ? map((e) => e.amount)
           .reduce((value, element) => value + element)
       : 0;
 
+  List<Product> get getProductsInCart => map((e) => e.product).toList();
+
   int getAmountByProduct(Product product) {
-    return cartItems.firstWhere((element) => element.product == product).amount;
+    return firstWhere((element) => element.product == product).amount;
   }
 
   void addItem(CartItem item) {
-    cartItems.add(item);
+    add(item);
   }
 
   void removeItem(CartItem item) {
-    cartItems.remove(item);
+    remove(item);
   }
 
   void removeItemByProduct(Product product) {
-    cartItems.removeWhere((item) => item.product == product);
+    removeWhere((item) => item.product == product);
   }
 
   void changeItemAmount(CartItem item, int newAmount) {
     item.changeAmount(newAmount);
   }
 
+  CartItem? getItemByProduct(Product product){
+    return firstWhereOrNull(
+            (element) => element.product == product);
+  }
+
+  ///TODO: make some more metohds in here
+  ///example[addOrderToItem] and [addItemOrIncrementAmountToCartItems]
   void addItemsFromOrder(Order order) {
-    if (cartItems.isEmpty) {
-      cartItems.addAll(order.cart.cartItems.map((e) => e));
+    if (isEmpty) {
+      addAll(order.cart.map((e) => e));
     } else {
-      for (var itemInOrder in order.cart.cartItems) {
-        CartItem? first = cartItems.firstWhereOrNull(
-            (element) => element.product == itemInOrder.product);
-        if (first == null) {
-          cartItems.add(itemInOrder);
+      for (var itemInOrder in order.cart) {
+        CartItem? itemFromCart = getItemByProduct(itemInOrder.product);
+        if (itemFromCart == null) {
+          add(itemInOrder);
         } else {
-          first.changeAmount(itemInOrder.amount);
+          itemFromCart.changeAmount(itemInOrder.amount);
         }
       }
     }

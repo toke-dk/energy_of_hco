@@ -17,7 +17,7 @@ class TotalOrders extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             Order currentIndexOrder = orders[index];
-            int amountOfProducts = currentIndexOrder.cart.allProducts;
+            int amountOfProducts = currentIndexOrder.amountOfProductsInOrder;
             return Center(
               child: Column(
                 children: [
@@ -32,7 +32,7 @@ class TotalOrders extends StatelessWidget {
                           productPrice: currentIndexOrder.totalPrice.toString(),
                           optionIcon: Icons.edit,
                           productImage: currentIndexOrder
-                              .cart.cartItems.first.product.image)),
+                              .cart.first.product.image)),
                 ],
               ),
             );

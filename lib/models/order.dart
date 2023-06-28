@@ -9,7 +9,7 @@ import 'package:energy_of_hco/widgets/days_scroll.dart';
 
 class Order {
   final User user;
-  final CartModel cart;
+  final List<CartItem> cart;
   final double totalPrice;
   final DateTime date;
   OrderProcesses orderProcess;
@@ -25,13 +25,22 @@ class Order {
   void changeOrderProcess(OrderProcesses newProcess) {
     orderProcess = newProcess;
   }
+
+  int get amountOfProductsInOrder => cart.amountOfProductsInItems;
 }
 
 enum OrderProcesses { ordered, bought, paid, delivered }
 
+extension on List<Order> {
+  List<Product> get getProductsInOrder => map((order) => order.cart)
+      .expand((cartItem) => cartItem)
+      .toList()
+      .getProductsInCart;
+}
+
 class OrdersProvider extends ChangeNotifier {
   /// Initialisation
-  void ordersProviderInit(){
+  void ordersProviderInit() {
     _currentDay = DateTime.now();
     _createShoppingFromOrdersForDay();
     _sortShoppingList();
@@ -70,35 +79,34 @@ class OrdersProvider extends ChangeNotifier {
   }
 
   CartItem _getItemFromShoppingList(CartItem item) {
-    return _shoppingList.cartItems.firstWhere((element) => element == item);
+    return _shoppingList.firstWhere((element) => element == item);
   }
 
   /// Shopping List Management
-  late CartModel _shoppingList;
+  late List<CartItem> _shoppingList;
 
-  CartModel get getShoppingList {return _shoppingList;}
+  List<CartItem> get getShoppingList {
+    return _shoppingList;
+  }
 
   void _createShoppingFromOrdersForDay() {
-    _shoppingList = CartModel(
-        cartItems: _ordersForCurrentDate
-            .map((order) => order.cart.cartItems.map((item) => item.product))
-            .expand((hype) => hype)
+    _shoppingList = _ordersForCurrentDate.getProductsInOrder
             .toSet()
             .toList()
             .map((product) => CartItem(
                 product: product,
                 amount: _ordersForCurrentDate
-                    .map((order) => order.cart.cartItems
+                    .map((order) => order.cart
                             .map((f) => f.product)
                             .contains(product)
                         ? order.cart.getAmountByProduct(product)
                         : 0)
                     .reduce((a, b) => a + b)))
-            .toList());
+            .toList();
   }
 
   void _sortShoppingList() {
-    _shoppingList.cartItems.sort((a, b) =>
+    _shoppingList.sort((a, b) =>
         a.product.brand.displayName.compareTo(b.product.brand.displayName));
   }
 
