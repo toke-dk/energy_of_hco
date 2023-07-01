@@ -37,8 +37,12 @@ class _OverViewState extends State<OverView> {
     return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
   }
 
-  List<Order> getOrdersForDay(context) {
-    return Provider.of<OrdersProvider>(context).getOrdersForDay;
+  List<Order> getPendingOrdersForDay(context) {
+    return Provider.of<OrdersProvider>(context).getPendingOrdersForDay;
+  }
+
+  List<Order> getBroughtOrdersForDay(context) {
+    return Provider.of<OrdersProvider>(context).getBroughtOrders;
   }
 
   void changeCurrentDate(DateTime newDate) {
@@ -86,16 +90,16 @@ class _OverViewState extends State<OverView> {
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: kAppWidthPadding),
                 child: Text(
-                  "Total orders",
+                  "Pending Orders",
                   style: getAppTextTheme(context).headline5,
                 )),
             TotalOrders(
-              orders: getOrdersForDay(context),
+              orders: getPendingOrdersForDay(context),
             ),
             Padding(
               padding: EdgeInsets.all(kAppWidthPadding),
               child: Text(
-                "Pending and complete",
+                "Brought",
                 style: getAppTextTheme(context).headline5,
               ),
             ),
@@ -117,7 +121,7 @@ class _OverViewState extends State<OverView> {
                       },
                     ))
                 : TotalOrders(
-                    orders: getOrdersForDay(context),
+                    orders: getBroughtOrdersForDay(context),
                   ),
             const SizedBox(
               height: 100,

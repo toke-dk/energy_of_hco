@@ -204,7 +204,7 @@ class _CartPageState extends State<CartPage> {
                                       user: getCurrentUser(context),
                                       cart: widget.cart,
                                       date: widget.dateForOrder,
-                                      orderProcess: OrderProcesses.ordered));
+                                      orderProcess: OrderProcesses.pendingOrder));
                               return Navigator.popUntil(
                                   context, (route) => route.isFirst);
                             }));

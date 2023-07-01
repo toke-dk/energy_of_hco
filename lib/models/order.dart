@@ -30,7 +30,7 @@ class Order {
   int get amountOfProductsInOrder => cart.amountOfProductsInItems;
 }
 
-enum OrderProcesses { ordered, bought, paid, delivered }
+enum OrderProcesses { pendingOrder, brought, paid, delivered }
 
 extension on List<Order> {
   List<Product> get getProductsInOrder => map((order) => order.cart)
@@ -79,16 +79,33 @@ class OrdersProvider extends ChangeNotifier {
     return _shoppingList.firstWhere((element) => element == item);
   }
 
+  /// Pending + Brought Orders
+  late final List<Order> _pendingOrders = _ordersForCurrentDate
+      .where((order) => order.orderProcess == OrderProcesses.pendingOrder)
+      .toList();
+
+  List<Order> get getPendingOrdersForDay {
+    return UnmodifiableListView(_ordersForCurrentDate
+        .where((order) => order.orderProcess == OrderProcesses.pendingOrder));
+  }
+
+  late final List<Order> _broughtOrders = _ordersForCurrentDate
+      .where((element) => element.orderProcess == OrderProcesses.brought)
+      .toList();
+
+  List<Order> get getBroughtOrders => UnmodifiableListView(_ordersForCurrentDate
+      .where((order) => order.orderProcess == OrderProcesses.brought));
+
   /// Shopping List Management
-  late List<ShopListItem> _shoppingList;
+  late final List<ShopListItem> _shoppingList;
 
   List<ShopListItem> get getShoppingList {
     return List.unmodifiable(_shoppingList);
   }
 
   void _sortShoppingList() {
-    _shoppingList.sort((a, b) =>
-        a.item.product.brand.displayName.compareTo(b.item.product.brand.displayName));
+    _shoppingList.sort((a, b) => a.item.product.brand.displayName
+        .compareTo(b.item.product.brand.displayName));
   }
 
   void changeShopListItemPurchase(ShopListItem item, int newAmount) {
