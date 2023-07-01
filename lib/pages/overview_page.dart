@@ -33,7 +33,7 @@ class _OverViewState extends State<OverView> {
     return Provider.of<OrdersProvider>(context).getCurrentDay;
   }
 
-  List<CartItem> getShoppingList() {
+  List<ShopListItem> getShoppingList() {
     return Provider.of<OrdersProvider>(context, listen: true).getShoppingList;
   }
 
@@ -46,7 +46,7 @@ class _OverViewState extends State<OverView> {
         .changeDay(newDate);
   }
 
-  void changeShopListItemPurchase(CartItem item, int newAmount) {
+  void changeShopListItemPurchase(ShopListItem item, int newAmount) {
     Provider.of<OrdersProvider>(context, listen: false)
         .changeShopListItemPurchase(item, newAmount);
   }
@@ -112,7 +112,7 @@ class _OverViewState extends State<OverView> {
                     alignment: Alignment.center,
                     child: _OrdersAsListView(
                       items: getShoppingList(),
-                      onItemAmountChange: (CartItem item, int changedAmount) {
+                      onItemAmountChange: (ShopListItem item, int changedAmount) {
                         changeShopListItemPurchase(item, changedAmount);
                       },
                     ))
@@ -134,9 +134,9 @@ class _OrdersAsListView extends StatelessWidget {
       {Key? key, required this.items, required this.onItemAmountChange})
       : super(key: key);
 
-  final List<CartItem> items;
+  final List<ShopListItem> items;
 
-  final Function(CartItem item, int changedAmount) onItemAmountChange;
+  final Function(ShopListItem item, int changedAmount) onItemAmountChange;
 
   @override
   Widget build(BuildContext context) {
@@ -151,11 +151,11 @@ class _OrdersAsListView extends StatelessWidget {
           ),
           Column(
               children: List.generate(items.length, (index) {
-            CartItem currentIndexItem = items[index];
+            ShopListItem currentIndexItem = items[index];
             return Padding(
               padding: const EdgeInsets.only(top: 10),
               child: _MyListItem(
-                item: currentIndexItem,
+                shopList: currentIndexItem,
                 onPurchasedAmountChange: (int newAmount) =>
                     onItemAmountChange(currentIndexItem, newAmount),
               ),
@@ -171,10 +171,12 @@ class _OrdersAsListView extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
+
           /// TODO this does not take fees into account
           /// I should give a total cost for the [Order] method
           Center(
-            child: Text(items.productsPrice.toString()),
+            child: Text(
+                items.map((e) => e.item).toList().productsPrice.toString()),
           )
         ],
       ),
@@ -184,9 +186,9 @@ class _OrdersAsListView extends StatelessWidget {
 
 class _MyListItem extends StatelessWidget {
   const _MyListItem(
-      {Key? key, required this.item, required this.onPurchasedAmountChange})
+      {Key? key, required this.shopList, required this.onPurchasedAmountChange})
       : super(key: key);
-  final CartItem item;
+  final ShopListItem shopList;
   final Function(int newAmount) onPurchasedAmountChange;
 
   @override
@@ -198,7 +200,7 @@ class _MyListItem extends StatelessWidget {
           flex: 2,
           child: FittedBox(
             fit: BoxFit.fitWidth,
-            child: item.product.image,
+            child: shopList.item.product.image,
           ),
         ),
         Expanded(
@@ -213,16 +215,16 @@ class _MyListItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.product.name,
+                        shopList.item.product.name,
                       ),
                       Text(
-                        "${item.product.brand.displayName}, ${item.product.sizeInCL}cL",
+                        "${shopList.item.product.brand.displayName}, ${shopList.item.product.sizeInCL}cL",
                         style: getAppTextTheme(context).caption,
                       )
                     ],
                   ),
                   Text(
-                    " (${item.amountBrought.toString()})",
+                    " (${shopList.item.amount.toString()})",
                     style: getAppTextTheme(context).subtitle1,
                   )
                 ],
@@ -234,8 +236,8 @@ class _MyListItem extends StatelessWidget {
           flex: 3,
           child: ChangeIntTile(
             onValueChange: (changeInt) => onPurchasedAmountChange(changeInt),
-            intAmount: item.amountPurchased ?? 0,
-            maxVal: item.amountBrought,
+            intAmount: shopList.amountBrought,
+            maxVal: shopList.item.amount,
             minVal: 0,
           ),
         )

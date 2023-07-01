@@ -43,7 +43,7 @@ class OrdersProvider extends ChangeNotifier {
   /// Initialisation
   void ordersProviderInit() {
     _currentDay = DateTime.now();
-    _createShoppingFromOrdersForDay();
+    _shoppingList = [];
     _sortShoppingList();
   }
 
@@ -75,38 +75,23 @@ class OrdersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  CartItem _getItemFromShoppingList(CartItem item) {
+  ShopListItem _getItemFromShoppingList(ShopListItem item) {
     return _shoppingList.firstWhere((element) => element == item);
   }
 
   /// Shopping List Management
-  late List<CartItem> _shoppingList;
+  late List<ShopListItem> _shoppingList;
 
-  List<CartItem> get getShoppingList {
+  List<ShopListItem> get getShoppingList {
     return List.unmodifiable(_shoppingList);
-  }
-
-  void _createShoppingFromOrdersForDay() {
-    _shoppingList = _ordersForCurrentDate.getProductsInOrder
-        .toSet()
-        .toList()
-        .map((product) => CartItem(
-            product: product,
-            amountBrought: _ordersForCurrentDate
-                .map((order) =>
-                    order.cart.map((f) => f.product).contains(product)
-                        ? order.cart.getAmountByProduct(product)
-                        : 0)
-                .reduce((a, b) => a + b)))
-        .toList();
   }
 
   void _sortShoppingList() {
     _shoppingList.sort((a, b) =>
-        a.product.brand.displayName.compareTo(b.product.brand.displayName));
+        a.item.product.brand.displayName.compareTo(b.item.product.brand.displayName));
   }
 
-  void changeShopListItemPurchase(CartItem item, int newAmount) {
+  void changeShopListItemPurchase(ShopListItem item, int newAmount) {
     _getItemFromShoppingList(item).changePurchasedAmount(newAmount);
     notifyListeners();
   }

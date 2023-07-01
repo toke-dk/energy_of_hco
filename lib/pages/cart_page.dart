@@ -413,10 +413,10 @@ class ShowCartItem extends StatelessWidget {
                 ),
                 ChangeIntTile(
                     onValueChange: (int changeVal) =>
-                        cartItem.amountBrought + changeVal <= 0
+                        cartItem.amount + changeVal <= 0
                             ? handleCartItemRemove()
                             : onItemAmountChange(changeVal),
-                    intAmount: cartItem.amountBrought)
+                    intAmount: cartItem.amount)
               ],
             ),
           ),

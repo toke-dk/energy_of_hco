@@ -6,27 +6,50 @@ import 'package:energy_of_hco/models/product.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart'; // You have to add this manually, for some reason it cannot be added automatically
 
-class CartItem {
+class ShopListItem {
+  CartItem item;
   int amountBrought;
-  int? amountPurchased;
+
+  ShopListItem({required this.item, required this.amountBrought});
+
+  void changePurchasedAmount(int newAmount) {
+    amountBrought += newAmount;
+  }
+}
+
+extension ShopListExtension on List<ShopListItem> {
+  ///TODO: make some more metohds in here
+  ///example[addOrderToItem] and [addItemOrIncrementAmountToCartItems]
+  void addItemsFromOrder(Order order) {
+    if (isEmpty) {
+      addAll(order.cart.map((cart) => ShopListItem(item: cart, amountBrought: 0)));
+    } else {
+      for (var itemInOrder in order.cart) {
+        CartItem? itemFromCart = map((e) => e.item).toList().getItemByProduct(itemInOrder.product);
+        if (itemFromCart == null) {
+          add(ShopListItem(item: itemInOrder, amountBrought: 0));
+        } else {
+          itemFromCart.changeAmount(itemInOrder.amount);
+        }
+      }
+    }
+  }
+}
+
+class CartItem {
+  int amount;
   Product product;
 
   CartItem({
-    this.amountPurchased,
-    required this.amountBrought,
+    required this.amount,
     required this.product,
   });
 
   get totalPriceForItem =>
-      myDoubleCorrector(amountBrought * product.priceExclDepositDKK);
+      myDoubleCorrector(amount * product.priceExclDepositDKK);
 
   void changeAmount(int newAmount) {
-    amountBrought += newAmount;
-  }
-
-  void changePurchasedAmount(int newAmount) {
-    amountPurchased =
-        amountPurchased == null ? newAmount : amountPurchased! + newAmount;
+    amount += newAmount;
   }
 }
 
@@ -35,19 +58,19 @@ class CartItem {
 extension CartItemListExtension on List<CartItem> {
 
   double get productsPrice => isNotEmpty
-      ? myDoubleCorrector(map((item) => item.amountBrought * item.product.priceExclDepositDKK)
+      ? myDoubleCorrector(map((item) => item.amount * item.product.priceExclDepositDKK)
           .reduce((value, element) => value + element))
       : 0;
 
   int get amountOfProductsInItems => isNotEmpty
-      ? map((e) => e.amountBrought)
+      ? map((e) => e.amount)
           .reduce((value, element) => value + element)
       : 0;
 
   List<Product> get getProductsInCart => map((e) => e.product).toList();
 
   int getAmountByProduct(Product product) {
-    return firstWhere((element) => element.product == product).amountBrought;
+    return firstWhere((element) => element.product == product).amount;
   }
 
   void addItem(CartItem item) {
@@ -69,22 +92,5 @@ extension CartItemListExtension on List<CartItem> {
   CartItem? getItemByProduct(Product product){
     return firstWhereOrNull(
             (element) => element.product == product);
-  }
-
-  ///TODO: make some more metohds in here
-  ///example[addOrderToItem] and [addItemOrIncrementAmountToCartItems]
-  void addItemsFromOrder(Order order) {
-    if (isEmpty) {
-      addAll(order.cart.map((e) => e));
-    } else {
-      for (var itemInOrder in order.cart) {
-        CartItem? itemFromCart = getItemByProduct(itemInOrder.product);
-        if (itemFromCart == null) {
-          add(itemInOrder);
-        } else {
-          itemFromCart.changeAmount(itemInOrder.amountBrought);
-        }
-      }
-    }
   }
 }
