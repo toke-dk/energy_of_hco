@@ -191,7 +191,7 @@ class _AddItemsState extends State<AddItems> {
                   onProductCartStateChange: (Product product, bool newValue) {
                     if (newValue) {
                       setState(() {
-                        cart.addItem(CartItem(amount: 1, product: product));
+                        cart.addItem(CartItem(amountBrought: 1, product: product));
                       });
                     } else {
                       setState(() {

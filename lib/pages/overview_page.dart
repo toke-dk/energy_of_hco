@@ -46,11 +46,6 @@ class _OverViewState extends State<OverView> {
         .changeDay(newDate);
   }
 
-  void changeOrderProcess(Order order, OrderProcesses newProcess) {
-    Provider.of<OrdersProvider>(context, listen: false)
-        .changeOrderProcess(order, newProcess);
-  }
-
   void changeShopListItemPurchase(CartItem item, int newAmount) {
     Provider.of<OrdersProvider>(context, listen: false)
         .changeShopListItemPurchase(item, newAmount);
@@ -227,7 +222,7 @@ class _MyListItem extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    " (${item.amount.toString()})",
+                    " (${item.amountBrought.toString()})",
                     style: getAppTextTheme(context).subtitle1,
                   )
                 ],
@@ -240,7 +235,7 @@ class _MyListItem extends StatelessWidget {
           child: ChangeIntTile(
             onValueChange: (changeInt) => onPurchasedAmountChange(changeInt),
             intAmount: item.amountPurchased ?? 0,
-            maxVal: item.amount,
+            maxVal: item.amountBrought,
             minVal: 0,
           ),
         )

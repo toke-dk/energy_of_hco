@@ -7,21 +7,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart'; // You have to add this manually, for some reason it cannot be added automatically
 
 class CartItem {
-  int amount;
+  int amountBrought;
   int? amountPurchased;
   Product product;
 
   CartItem({
     this.amountPurchased,
-    required this.amount,
+    required this.amountBrought,
     required this.product,
   });
 
   get totalPriceForItem =>
-      myDoubleCorrector(amount * product.priceExclDepositDKK);
+      myDoubleCorrector(amountBrought * product.priceExclDepositDKK);
 
   void changeAmount(int newAmount) {
-    amount += newAmount;
+    amountBrought += newAmount;
   }
 
   void changePurchasedAmount(int newAmount) {
@@ -35,19 +35,19 @@ class CartItem {
 extension CartItemListExtension on List<CartItem> {
 
   double get productsPrice => isNotEmpty
-      ? myDoubleCorrector(map((item) => item.amount * item.product.priceExclDepositDKK)
+      ? myDoubleCorrector(map((item) => item.amountBrought * item.product.priceExclDepositDKK)
           .reduce((value, element) => value + element))
       : 0;
 
   int get amountOfProductsInItems => isNotEmpty
-      ? map((e) => e.amount)
+      ? map((e) => e.amountBrought)
           .reduce((value, element) => value + element)
       : 0;
 
   List<Product> get getProductsInCart => map((e) => e.product).toList();
 
   int getAmountByProduct(Product product) {
-    return firstWhere((element) => element.product == product).amount;
+    return firstWhere((element) => element.product == product).amountBrought;
   }
 
   void addItem(CartItem item) {
@@ -82,7 +82,7 @@ extension CartItemListExtension on List<CartItem> {
         if (itemFromCart == null) {
           add(itemInOrder);
         } else {
-          itemFromCart.changeAmount(itemInOrder.amount);
+          itemFromCart.changeAmount(itemInOrder.amountBrought);
         }
       }
     }

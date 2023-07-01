@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:energy_of_hco/models/cart.dart';
 import 'package:energy_of_hco/models/item_categories.dart';
@@ -74,10 +75,6 @@ class OrdersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Order _getOrderFromCurrentDayOrders(Order order) {
-    return _ordersForCurrentDate.firstWhere((element) => element == order);
-  }
-
   CartItem _getItemFromShoppingList(CartItem item) {
     return _shoppingList.firstWhere((element) => element == item);
   }
@@ -86,33 +83,27 @@ class OrdersProvider extends ChangeNotifier {
   late List<CartItem> _shoppingList;
 
   List<CartItem> get getShoppingList {
-    return _shoppingList;
+    return List.unmodifiable(_shoppingList);
   }
 
   void _createShoppingFromOrdersForDay() {
     _shoppingList = _ordersForCurrentDate.getProductsInOrder
-            .toSet()
-            .toList()
-            .map((product) => CartItem(
-                product: product,
-                amount: _ordersForCurrentDate
-                    .map((order) => order.cart
-                            .map((f) => f.product)
-                            .contains(product)
+        .toSet()
+        .toList()
+        .map((product) => CartItem(
+            product: product,
+            amountBrought: _ordersForCurrentDate
+                .map((order) =>
+                    order.cart.map((f) => f.product).contains(product)
                         ? order.cart.getAmountByProduct(product)
                         : 0)
-                    .reduce((a, b) => a + b)))
-            .toList();
+                .reduce((a, b) => a + b)))
+        .toList();
   }
 
   void _sortShoppingList() {
     _shoppingList.sort((a, b) =>
         a.product.brand.displayName.compareTo(b.product.brand.displayName));
-  }
-
-  void changeOrderProcess(Order order, OrderProcesses newProcess) {
-    _getOrderFromCurrentDayOrders(order).changeOrderProcess(newProcess);
-    notifyListeners();
   }
 
   void changeShopListItemPurchase(CartItem item, int newAmount) {
