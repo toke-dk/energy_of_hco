@@ -4,6 +4,7 @@ import 'package:energy_of_hco/models/item_categories.dart';
 import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/cart_page.dart';
+import 'package:energy_of_hco/widgets/change_int_widget.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/show_product_detail.dart';
 import 'package:flutter/material.dart';
@@ -275,9 +276,6 @@ class _ProductsGridView extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: ShowProductDetails(
-                      onOptionIconTap: () => onProductCartStateChange(
-                          currentIndexProduct,
-                          !_isItemInCart(currentIndexProduct)),
                       onFavouriteChange: (value) =>
                           onFavouriteChange(currentIndexProduct, value),
                       isFavourite:
@@ -285,9 +283,25 @@ class _ProductsGridView extends StatelessWidget {
                       subTitle: currentIndexProduct.sizeInCL.toString(),
                       productPrice:
                           currentIndexProduct.priceExclDepositDKK.toString(),
-                      optionIcon: _isItemInCart(currentIndexProduct)
-                          ? Icons.check
-                          : Icons.add_shopping_cart_outlined,
+                      optionChild: _isItemInCart(currentIndexProduct)
+                          ? Padding(
+                        padding: EdgeInsets.only(left: 20),
+                            child: ChangeIntTile(
+                                    onValueChange: (int value) => null,
+                                    intAmount: 1)
+                                .animate()
+                                .slideX(begin: -0.1)
+                                .fadeIn(),
+                          )
+                          : InkWell(
+                              onTap: () => onProductCartStateChange(
+                                  currentIndexProduct,
+                                  !_isItemInCart(currentIndexProduct)),
+                              child: Icon(
+                                Icons.add_shopping_cart_outlined,
+                                size: 20,
+                                color: getAppColorScheme(context).primary,
+                              )),
                       title: currentIndexProduct.name,
                       productImage: currentIndexProduct.image,
                       favouriteIcon: true)),

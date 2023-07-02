@@ -1,3 +1,4 @@
+import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:energy_of_hco/models/order.dart';
 import 'package:energy_of_hco/widgets/days_scroll.dart';
 import 'package:energy_of_hco/widgets/show_product_detail.dart';
@@ -30,7 +31,7 @@ class TotalOrders extends StatelessWidget {
                           title: currentIndexOrder.user.firstName,
                           subTitle: amountOfProducts.toString() + " product${amountOfProducts!=1 ? 's' : ''}",
                           productPrice: currentIndexOrder.totalPrice.toString(),
-                          optionIcon: Icons.edit,
+                          optionChild: Icon(Icons.edit,size: 20, color: getAppColorScheme(context).primary,),
                           productImage: currentIndexOrder
                               .cart.first.product.image)),
                 ],

@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class ShowProductDetails extends StatelessWidget {
-  const ShowProductDetails(
-      {Key? key,
-      required this.productImage,
-      this.title,
-      this.subTitle,
-      this.trailing,
-      this.productPrice,
-      this.favouriteIcon,
-      this.optionIcon,
-      this.isFavourite,
-      this.onFavouriteChange,
-      this.onOptionIconTap})
-      : super(key: key);
+  const ShowProductDetails({
+    Key? key,
+    required this.productImage,
+    this.title,
+    this.subTitle,
+    this.trailing,
+    this.productPrice,
+    this.favouriteIcon,
+    this.optionChild,
+    this.isFavourite,
+    this.onFavouriteChange,
+  }) : super(key: key);
 
   final Widget productImage;
   final String? title;
@@ -26,8 +25,7 @@ class ShowProductDetails extends StatelessWidget {
   final bool? favouriteIcon;
   final bool? isFavourite;
   final Function(bool)? onFavouriteChange;
-  final IconData? optionIcon;
-  final Function()? onOptionIconTap;
+  final Widget? optionChild;
 
   @override
   Widget build(BuildContext context) {
@@ -147,17 +145,10 @@ class ShowProductDetails extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                           ),
                         ),
-                        FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: InkWell(
-                            onTap: onOptionIconTap,
-                            child: Icon(
-                              optionIcon,
-                              size: 20,
-                              color: getAppColorScheme(context).primary,
-                            ),
-                          ),
-                        ),
+                        Expanded(
+                            child: Align(
+                                alignment: Alignment.centerRight,
+                                child: optionChild)),
                       ],
                     ),
                   ],

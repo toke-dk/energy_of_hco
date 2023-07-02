@@ -10,6 +10,7 @@ import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/widgets/change_int_widget.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
@@ -168,18 +169,9 @@ class _CartPageState extends State<CartPage> {
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: ShowOrderPrices(
                                 rowsAndColumns: [
-                                  [
-                                    "Subtotal",
-                                    "${subtotalPrice(context)} kr."
-                                  ],
-                                  [
-                                    "Service fee",
-                                    "${fees(context)} kr."
-                                  ],
-                                  [
-                                    "Total",
-                                    "${totalPrice(context)} kr."
-                                  ]
+                                  ["Subtotal", "${subtotalPrice(context)} kr."],
+                                  ["Service fee", "${fees(context)} kr."],
+                                  ["Total", "${totalPrice(context)} kr."]
                                 ],
                               )),
                         ],
