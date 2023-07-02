@@ -62,7 +62,7 @@ class _DaysScrollState extends State<DaysScroll> {
         : getAppColorScheme(context).onPrimary;
     Color textColor = firstDate.isSameDate(secondDate)
         ? getAppColorScheme(context).onPrimary
-        : getAppTextTheme(context).bodyText1!.color!;
+        : getAppTextTheme(context).bodyMedium!.color!;
     return {"button": buttonColor, "text": textColor};
   }
 
@@ -94,7 +94,10 @@ class _DaysScrollState extends State<DaysScroll> {
                           year: _initialDate.year)[indexDay];
                       return Column(
                         children: [
-                          Text(DateFormat.MMM().format(thisIndexDate)),
+                          Text(
+                            DateFormat.MMM().format(thisIndexDate),
+                            style: getAppTextTheme(context).bodySmall,
+                          ),
                           InkWell(
                             onTap: () {
                               setState(() {
@@ -113,31 +116,28 @@ class _DaysScrollState extends State<DaysScroll> {
                                       _selectedDate, thisIndexDate)["button"]),
                               child: Column(
                                 children: [
-                                  Text(
-                                    DateFormat.E().format(thisIndexDate),
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: _colorsFromDateDifference(
-                                            _selectedDate,
-                                            thisIndexDate)["text"]),
-                                  ),
-                                  Text(
-                                    "${thisIndexDate.day}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: _colorsFromDateDifference(
-                                            _selectedDate,
-                                            thisIndexDate)["text"]),
-                                  ),
+                                  Text(DateFormat.E().format(thisIndexDate),
+                                      style: getAppTextTheme(context)
+                                          .labelSmall!
+                                          .copyWith(
+                                              color: _colorsFromDateDifference(
+                                                  _selectedDate,
+                                                  thisIndexDate)["text"])),
+                                  Text("${thisIndexDate.day}",
+                                      textAlign: TextAlign.center,
+                                      style: getAppTextTheme(context)
+                                          .bodyMedium!
+                                          .copyWith(
+                                              color: _colorsFromDateDifference(
+                                                  _selectedDate,
+                                                  thisIndexDate)["text"])),
                                 ],
                               ),
                             ),
                           ),
                           Text(
                             DateFormat.y().format(thisIndexDate),
-                            style: getAppTextTheme(context).subtitle1,
+                            style: getAppTextTheme(context).bodySmall,
                           ),
                         ],
                       );

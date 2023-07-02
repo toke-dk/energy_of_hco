@@ -91,7 +91,7 @@ class _OverViewState extends State<OverView> {
                 padding: EdgeInsets.symmetric(horizontal: kAppWidthPadding),
                 child: Text(
                   "Pending Orders",
-                  style: getAppTextTheme(context).headline5,
+                  style: getAppTextTheme(context).headlineSmall,
                 )),
             TotalOrders(
               orders: getPendingOrdersForDay(context),
@@ -100,7 +100,7 @@ class _OverViewState extends State<OverView> {
               padding: EdgeInsets.all(kAppWidthPadding),
               child: Text(
                 "Brought",
-                style: getAppTextTheme(context).headline5,
+                style: getAppTextTheme(context).headlineSmall,
               ),
             ),
             Center(
@@ -116,7 +116,8 @@ class _OverViewState extends State<OverView> {
                     alignment: Alignment.center,
                     child: _OrdersAsListView(
                       items: getShoppingList(),
-                      onItemAmountChange: (ShopListItem item, int changedAmount) {
+                      onItemAmountChange:
+                          (ShopListItem item, int changedAmount) {
                         changeShopListItemPurchase(item, changedAmount);
                       },
                     ))
@@ -145,13 +146,13 @@ class _OrdersAsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPaper(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             "Pending",
-            style: getAppTextTheme(context).headline6,
+            style: getAppTextTheme(context).bodyLarge,
           ),
           Column(
               children: List.generate(items.length, (index) {
@@ -170,7 +171,7 @@ class _OrdersAsListView extends StatelessWidget {
           ),
           Text(
             "Price",
-            style: getAppTextTheme(context).headline6,
+            style: getAppTextTheme(context).bodyLarge,
           ),
           const SizedBox(
             height: 8,
@@ -212,7 +213,7 @@ class _MyListItem extends StatelessWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Padding(
-              padding: EdgeInsets.only(right: 5),
+              padding: const EdgeInsets.only(right: 5),
               child: Row(
                 children: [
                   Column(
@@ -223,13 +224,13 @@ class _MyListItem extends StatelessWidget {
                       ),
                       Text(
                         "${shopList.item.product.brand.displayName}, ${shopList.item.product.sizeInCL}cL",
-                        style: getAppTextTheme(context).caption,
+                        style: getAppTextTheme(context).bodySmall,
                       )
                     ],
                   ),
                   Text(
                     " (${shopList.item.amount.toString()})",
-                    style: getAppTextTheme(context).subtitle1,
+                    style: getAppTextTheme(context).bodySmall,
                   )
                 ],
               ),

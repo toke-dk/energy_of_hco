@@ -96,11 +96,11 @@ class _CartPageState extends State<CartPage> {
                             children: [
                               Text(
                                 "Items",
-                                style: getAppTextTheme(context).headline5,
+                                style: getAppTextTheme(context).headlineSmall,
                               ),
                               Text(
                                 "${widget.cart.length} item${widget.cart.length > 1 ? 's' : ''}",
-                                style: getAppTextTheme(context).subtitle1,
+                                style: getAppTextTheme(context).bodySmall,
                               )
                             ],
                           ),
@@ -141,15 +141,6 @@ class _CartPageState extends State<CartPage> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.add),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Text("Add more"),
-                                ],
-                              ),
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                       getAppColorScheme(context).onPrimary),
@@ -157,6 +148,15 @@ class _CartPageState extends State<CartPage> {
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(30)))),
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.add),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text("Add more"),
+                                ],
+                              ),
                             ),
                           ),
                           const Divider(
@@ -204,14 +204,21 @@ class _CartPageState extends State<CartPage> {
                                       user: getCurrentUser(context),
                                       cart: widget.cart,
                                       date: widget.dateForOrder,
-                                      orderProcess: OrderProcesses.pendingOrder));
+                                      orderProcess:
+                                          OrderProcesses.pendingOrder));
                               return Navigator.popUntil(
                                   context, (route) => route.isFirst);
                             }));
                   },
-                  child: Row(
+                  style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(17),
+                        topRight: Radius.circular(17)),
+                  )),
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Icon(Icons.local_fire_department),
                       Text(
                         "Place order!",
@@ -220,14 +227,6 @@ class _CartPageState extends State<CartPage> {
                       Icon(Icons.local_fire_department)
                     ],
                   ),
-                  style: ElevatedButton.styleFrom(
-                      primary: getAppColorScheme(context).primary,
-                      onPrimary: getAppColorScheme(context).onPrimary,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(17),
-                            topRight: Radius.circular(17)),
-                      )),
                 ),
               ),
             ),

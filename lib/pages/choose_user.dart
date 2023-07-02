@@ -16,14 +16,15 @@ class ChooseUser extends StatefulWidget {
 }
 
 class _ChooseUserState extends State<ChooseUser> {
-
-  void testUserInitializer(context){
+  void testUserInitializer(context) {
     final User testUser = User(
         firstName: "Tester",
         lastName: "User",
         energyPoints: 100,
         favouriteProducts: []);
-    if (!getAllUsers(context, listen: false).map((e) => e.firstName).contains("Tester")) {
+    if (!getAllUsers(context, listen: false)
+        .map((e) => e.firstName)
+        .contains("Tester")) {
       Provider.of<UsersProvider>(context, listen: false).addUser(testUser);
     }
   }
@@ -80,7 +81,7 @@ class _ChooseUserState extends State<ChooseUser> {
                       ),
                       Text(
                         "Become a member !",
-                        style: getAppTextTheme(context).bodyText1,
+                        style: getAppTextTheme(context).bodyMedium,
                       ),
                     ],
                   ),
@@ -90,7 +91,7 @@ class _ChooseUserState extends State<ChooseUser> {
                     padding: const EdgeInsets.only(top: 18, bottom: 18),
                     child: Text(
                       "Already a member?",
-                      style: getAppTextTheme(context).subtitle1,
+                      style: getAppTextTheme(context).bodySmall,
                     ),
                   ),
                 ),
@@ -128,7 +129,9 @@ class _ChooseUserState extends State<ChooseUser> {
                               Provider.of<UsersProvider>(context, listen: false)
                                   .setCurrentUser(user);
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AddItems(dateToAddOrder: widget.dateChosen,),
+                                builder: (context) => AddItems(
+                                  dateToAddOrder: widget.dateChosen,
+                                ),
                               ));
                             },
                             cells: [
@@ -143,7 +146,7 @@ class _ChooseUserState extends State<ChooseUser> {
 }
 
 Future _becomeAMemberDialog(context) {
-  Widget _dialogActionText(onPressed, text) => TextButton(
+  Widget dialogActionText(onPressed, text) => TextButton(
       onPressed: onPressed,
       child: Text(
         text,
@@ -155,7 +158,7 @@ Future _becomeAMemberDialog(context) {
   String firstName = "";
   String lastName = "";
 
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   final InputBorder borderDecoration =
       OutlineInputBorder(borderRadius: BorderRadius.circular(9));
@@ -172,7 +175,7 @@ Future _becomeAMemberDialog(context) {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   child: Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -180,7 +183,7 @@ Future _becomeAMemberDialog(context) {
                       children: [
                         Text(
                           "Become a member",
-                          style: getAppTextTheme(context).headline5,
+                          style: getAppTextTheme(context).headlineSmall,
                         ),
                         const SizedBox(
                           height: 29,
@@ -199,8 +202,6 @@ Future _becomeAMemberDialog(context) {
                               },
                               decoration: InputDecoration(
                                 labelText: "First name",
-                                labelStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold),
                                 hintText: "John",
                                 border: borderDecoration,
                               ),
@@ -219,8 +220,6 @@ Future _becomeAMemberDialog(context) {
                                   value!.isEmpty ? "Write last name" : null,
                               decoration: InputDecoration(
                                 labelText: "Last name",
-                                labelStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold),
                                 hintText: "Doe",
                                 border: borderDecoration,
                               ),
@@ -233,11 +232,11 @@ Future _becomeAMemberDialog(context) {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            _dialogActionText(() {
+                            dialogActionText(() {
                               Navigator.pop(context);
                             }, "Cancel"),
-                            _dialogActionText(() {
-                              if (_formKey.currentState!.validate()) {
+                            dialogActionText(() {
+                              if (formKey.currentState!.validate()) {
                                 Navigator.pop(context, [firstName, lastName]);
                               }
                             }, "Add !"),

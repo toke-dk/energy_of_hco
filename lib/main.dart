@@ -39,25 +39,7 @@ class MyApp extends StatelessWidget {
               style: ButtonStyle(
                   side: MaterialStateProperty.all(
                       BorderSide(color: Palette.kPrimaryMaterialColor[200]!)))),
-          textTheme: TextTheme(
-              headline1:
-                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
-              headline2:
-                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
-              headline3:
-                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
-              headline4:
-                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
-              headline5:
-                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
-              headline6:
-                  TextStyle(fontWeight: FontWeight.bold, color: headlineColor),
-              bodyText1: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.black),
-              bodyText2: const TextStyle(color: Colors.black),
-              subtitle1: TextStyle(fontSize: 13, color: Colors.grey[600])),
           scaffoldBackgroundColor: const Color(0xffFAFAFA),
-          fontFamily: "Jura",
         ),
         home: const MyHomePage(title: 'Overview'),
       ),

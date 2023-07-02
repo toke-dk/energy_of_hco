@@ -29,7 +29,7 @@ class MyHorizontalListView extends StatelessWidget {
     }
     return [
       getAppColorScheme(context).onPrimary,
-      getAppTextTheme(context).bodyText2!.color!
+      getAppTextTheme(context).bodyMedium!.color!
     ];
   }
 
@@ -83,7 +83,7 @@ class MyHorizontalListView extends StatelessWidget {
                             : const SizedBox(),
                         Text(
                           allTitles[index],
-                          style: TextStyle(
+                          style: getAppTextTheme(context).bodySmall!.copyWith(
                               color: _getButtonColors(
                                   currentIndexItem, context)[1]),
                         ),

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
-
 class AddItems extends StatefulWidget {
   const AddItems({Key? key, required this.dateToAddOrder}) : super(key: key);
   final DateTime dateToAddOrder;
@@ -135,7 +134,7 @@ class _AddItemsState extends State<AddItems> {
                               )),
                         ),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
               ],
             ),
           ],
@@ -148,7 +147,7 @@ class _AddItemsState extends State<AddItems> {
               children: [
                 Text(
                   "Categories",
-                  style: getAppTextTheme(context).headline6,
+                  style: getAppTextTheme(context).headlineSmall,
                 ),
                 MyHorizontalListView(
                   onChange: (newCategory) {
@@ -175,7 +174,7 @@ class _AddItemsState extends State<AddItems> {
                 ),
                 Text(
                   chosenTopCategory.displayName,
-                  style: getAppTextTheme(context).headline5,
+                  style: getAppTextTheme(context).headlineSmall,
                 ),
                 _ProductsGridView(
                   products: _getProductsToShow(
@@ -267,7 +266,8 @@ class _ProductsGridView extends StatelessWidget {
                     onFavouriteChange(currentIndexProduct, value),
                 isFavourite: favouriteProducts.contains(currentIndexProduct),
                 subTitle: currentIndexProduct.sizeInCL.toString(),
-                productPrice: currentIndexProduct.priceExclDepositDKK.toString(),
+                productPrice:
+                    currentIndexProduct.priceExclDepositDKK.toString(),
                 optionIcon: _isItemInCart(currentIndexProduct)
                     ? Icons.check
                     : Icons.add_shopping_cart_outlined,

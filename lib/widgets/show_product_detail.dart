@@ -100,7 +100,7 @@ class ShowProductDetails extends StatelessWidget {
                           child: Text(
                             subTitle ?? "",
                             overflow: TextOverflow.ellipsis,
-                            style: getAppTextTheme(context).subtitle1,
+                            style: getAppTextTheme(context).bodySmall,
                           ),
                         ),
                         trailing != null
@@ -108,7 +108,7 @@ class ShowProductDetails extends StatelessWidget {
                                 child: Text(
                                   trailing ?? "",
                                   overflow: TextOverflow.ellipsis,
-                                  style: getAppTextTheme(context).subtitle1,
+                                  style: getAppTextTheme(context).bodySmall,
                                 ),
                               )
                             : const SizedBox()
@@ -121,20 +121,22 @@ class ShowProductDetails extends StatelessWidget {
                           fit: BoxFit.fitWidth,
                           child: Text(
                             productPrice ?? "",
-                            style: TextStyle(
-                                color: getAppColorScheme(context).primary,
-                                fontWeight: FontWeight.bold),
+                            style: getAppTextTheme(context)
+                                .bodyMedium!
+                                .copyWith(
+                                    color: getAppColorScheme(context).primary,
+                                    fontWeight: FontWeight.bold),
                           ),
                         ),
                         FittedBox(
                           fit: BoxFit.fitWidth,
                           child: InkWell(
+                            onTap: onOptionIconTap,
                             child: Icon(
                               optionIcon,
                               size: 20,
                               color: getAppColorScheme(context).primary,
                             ),
-                            onTap: onOptionIconTap,
                           ),
                         ),
                       ],

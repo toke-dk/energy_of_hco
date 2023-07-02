@@ -25,13 +25,13 @@ class ChangeIntTile extends StatelessWidget {
   }
 
   bool get _conditionForPluPress {
-    if (maxVal != null){
+    if (maxVal != null) {
       if (intAmount + 1 <= maxVal!) {
         return true;
       }
       return false;
     }
-    if (onValueChange != null){
+    if (onValueChange != null) {
       return true;
     }
     return false;
