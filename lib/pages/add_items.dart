@@ -7,6 +7,8 @@ import 'package:energy_of_hco/pages/cart_page.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/show_product_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class AddItems extends StatefulWidget {
@@ -142,67 +144,75 @@ class _AddItemsState extends State<AddItems> {
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Categories",
-                  style: getAppTextTheme(context).headlineSmall,
-                ),
-                MyHorizontalListView(
-                  onChange: (newCategory) {
-                    setState(() {
-                      chosenTopCategory = newCategory;
-                    });
-                  },
-                  chosenItems: [chosenTopCategory],
-                  allItems: TopCategories.values,
-                  allTitles:
-                      TopCategories.values.map((e) => e.displayName).toList(),
-                  scaleFactor: 1.2,
-                ),
-                MyHorizontalListView(
-                  onChange: (newBrand) {
-                    setState(() {
-                      chosenBrands = _onBrandsClickChange(newBrand);
-                    });
-                  },
-                  showCheckMark: true,
-                  chosenItems: chosenBrands,
-                  allItems: Brands.values,
-                  allTitles: Brands.values.map((e) => e.displayName).toList(),
-                ),
-                Text(
-                  chosenTopCategory.displayName,
-                  style: getAppTextTheme(context).headlineSmall,
-                ),
-                _ProductsGridView(
-                  products: _getProductsToShow(
-                      chosenTopCategory, chosenBrands, context),
-                  onFavouriteChange: (Product product, bool value) {
-                    if (!value) {
-                      addFavouriteProduct(context, product);
-                    } else {
-                      removeFavouriteProduct(context, product);
-                    }
-                  },
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: AnimationConfiguration.toStaggeredList(
+                  childAnimationBuilder: (widget) => SlideAnimation(
+                      duration: Duration(milliseconds: 500),
+                      horizontalOffset: 50.0,
+                      child: widget),
+                  children: [
+                    Text(
+                      "Categories",
+                      style: getAppTextTheme(context).headlineSmall,
+                    ),
+                    MyHorizontalListView(
+                      onChange: (newCategory) {
+                        setState(() {
+                          chosenTopCategory = newCategory;
+                        });
+                      },
+                      chosenItems: [chosenTopCategory],
+                      allItems: TopCategories.values,
+                      allTitles: TopCategories.values
+                          .map((e) => e.displayName)
+                          .toList(),
+                      scaleFactor: 1.2,
+                    ),
+                    MyHorizontalListView(
+                      onChange: (newBrand) {
+                        setState(() {
+                          chosenBrands = _onBrandsClickChange(newBrand);
+                        });
+                      },
+                      showCheckMark: true,
+                      chosenItems: chosenBrands,
+                      allItems: Brands.values,
+                      allTitles:
+                          Brands.values.map((e) => e.displayName).toList(),
+                    ),
+                    Text(
+                      chosenTopCategory.displayName,
+                      style: getAppTextTheme(context).headlineSmall,
+                    ),
+                    _ProductsGridView(
+                      products: _getProductsToShow(
+                          chosenTopCategory, chosenBrands, context),
+                      onFavouriteChange: (Product product, bool value) {
+                        if (!value) {
+                          addFavouriteProduct(context, product);
+                        } else {
+                          removeFavouriteProduct(context, product);
+                        }
+                      },
 
-                  ///TODO get this mess to look a bit nicer
-                  favouriteProducts: getFavouriteProducts(context),
-                  onProductCartStateChange: (Product product, bool newValue) {
-                    if (newValue) {
-                      setState(() {
-                        cart.addItem(CartItem(amount: 1, product: product));
-                      });
-                    } else {
-                      setState(() {
-                        cart.removeItemByProduct(product);
-                      });
-                    }
-                  },
-                  cartItemsInCart: cart,
-                )
-              ],
-            ),
+                      ///TODO get this mess to look a bit nicer
+                      favouriteProducts: getFavouriteProducts(context),
+                      onProductCartStateChange:
+                          (Product product, bool newValue) {
+                        if (newValue) {
+                          setState(() {
+                            cart.addItem(CartItem(amount: 1, product: product));
+                          });
+                        } else {
+                          setState(() {
+                            cart.removeItemByProduct(product);
+                          });
+                        }
+                      },
+                      cartItemsInCart: cart,
+                    )
+                  ],
+                )),
           ),
         ),
       ),
@@ -250,30 +260,41 @@ class _ProductsGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const ScrollPhysics(),
-      crossAxisCount: 2,
-      children: List.generate(products.length, (index) {
-        Product currentIndexProduct = products[index];
-        return Padding(
-            padding: const EdgeInsets.all(10),
-            child: ShowProductDetails(
-                onOptionIconTap: () => onProductCartStateChange(
-                    currentIndexProduct, !_isItemInCart(currentIndexProduct)),
-                onFavouriteChange: (value) =>
-                    onFavouriteChange(currentIndexProduct, value),
-                isFavourite: favouriteProducts.contains(currentIndexProduct),
-                subTitle: currentIndexProduct.sizeInCL.toString(),
-                productPrice:
-                    currentIndexProduct.priceExclDepositDKK.toString(),
-                optionIcon: _isItemInCart(currentIndexProduct)
-                    ? Icons.check
-                    : Icons.add_shopping_cart_outlined,
-                title: currentIndexProduct.name,
-                productImage: currentIndexProduct.image,
-                favouriteIcon: true));
-      }),
+    return AnimationLimiter(
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const ScrollPhysics(),
+        crossAxisCount: 2,
+        children: List.generate(products.length, (index) {
+          Product currentIndexProduct = products[index];
+          return AnimationConfiguration.staggeredGrid(
+            position: index,
+            duration: const Duration(seconds: 1),
+            columnCount: 2,
+            child: SlideAnimation(
+              child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: ShowProductDetails(
+                      onOptionIconTap: () => onProductCartStateChange(
+                          currentIndexProduct,
+                          !_isItemInCart(currentIndexProduct)),
+                      onFavouriteChange: (value) =>
+                          onFavouriteChange(currentIndexProduct, value),
+                      isFavourite:
+                          favouriteProducts.contains(currentIndexProduct),
+                      subTitle: currentIndexProduct.sizeInCL.toString(),
+                      productPrice:
+                          currentIndexProduct.priceExclDepositDKK.toString(),
+                      optionIcon: _isItemInCart(currentIndexProduct)
+                          ? Icons.check
+                          : Icons.add_shopping_cart_outlined,
+                      title: currentIndexProduct.name,
+                      productImage: currentIndexProduct.image,
+                      favouriteIcon: true)),
+            ),
+          );
+        }),
+      ),
     );
   }
 }
