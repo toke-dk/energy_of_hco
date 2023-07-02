@@ -7,7 +7,9 @@ import 'package:energy_of_hco/pages/cart_page.dart';
 import 'package:energy_of_hco/widgets/my_horizontal_listview.dart';
 import 'package:energy_of_hco/widgets/show_product_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+
 
 class AddItems extends StatefulWidget {
   const AddItems({Key? key, required this.dateToAddOrder}) : super(key: key);
