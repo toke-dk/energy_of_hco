@@ -65,7 +65,7 @@ class ChangeIntTile extends StatelessWidget {
                 children: [
                   Text(intAmount.toString()),
                   Text(
-                    "/ " + maxVal.toString(),
+                    "/ $maxVal",
                     style: TextStyle(
                         color: Theme.of(context).unselectedWidgetColor,
                         fontSize: 10),

@@ -10,7 +10,7 @@ class DaysScroll extends StatefulWidget {
   final Function(DateTime)? onDateChange;
 
   @override
-  _DaysScrollState createState() => _DaysScrollState();
+  State<DaysScroll> createState() => _DaysScrollState();
 }
 
 class _DaysScrollState extends State<DaysScroll> {

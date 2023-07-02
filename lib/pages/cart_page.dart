@@ -170,15 +170,15 @@ class _CartPageState extends State<CartPage> {
                                 rowsAndColumns: [
                                   [
                                     "Subtotal",
-                                    subtotalPrice(context).toString() + " kr."
+                                    "${subtotalPrice(context)} kr."
                                   ],
                                   [
                                     "Service fee",
-                                    fees(context).toString() + " kr."
+                                    "${fees(context)} kr."
                                   ],
                                   [
                                     "Total",
-                                    totalPrice(context).toString() + " kr."
+                                    "${totalPrice(context)} kr."
                                   ]
                                 ],
                               )),
@@ -386,7 +386,7 @@ class ShowCartItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     style: getAppTextTheme(context)
-                        .headline6!
+                        .headlineSmall!
                         .copyWith(fontSize: 16),
                   ),
                   Text(

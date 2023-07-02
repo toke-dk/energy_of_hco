@@ -1,6 +1,4 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
-import 'package:energy_of_hco/models/cart.dart';
-import 'package:energy_of_hco/models/product.dart';
 import 'package:energy_of_hco/models/user.dart';
 import 'package:energy_of_hco/pages/add_items.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
