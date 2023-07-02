@@ -1,6 +1,7 @@
 import 'package:energy_of_hco/helpers/app_theme_helper.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ShowProductDetails extends StatelessWidget {
   const ShowProductDetails(
@@ -63,17 +64,35 @@ class ShowProductDetails extends StatelessWidget {
                           right: 8,
                           top: 8,
                           child: InkWell(
-                            onTap:
-                                onFavouriteChange != null && isFavourite != null
-                                    ? () => onFavouriteChange!(isFavourite!)
-                                    : null,
-                            child: Icon(
-                              isFavourite == true
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: getAppColorScheme(context).primary,
-                            ),
-                          ))
+                              onTap: onFavouriteChange != null &&
+                                      isFavourite != null
+                                  ? () => onFavouriteChange!(isFavourite!)
+                                  : null,
+                              child: Animate(
+                                  target: isFavourite == true ? 1 : 0,
+                                  effects: isFavourite == true
+                                      ? [
+                                          ScaleEffect(
+                                              duration: 100.milliseconds,
+                                              end: const Offset(1.2, 1.2)),
+                                          ThenEffect(delay: 120.milliseconds),
+                                          ScaleEffect(
+                                              duration: 100.milliseconds,
+                                              end: const Offset(
+                                                  1 / 1.2, 1 / 1.2))
+                                        ]
+                                      : [
+                                          ShakeEffect(
+                                              hz: 5,
+                                              duration: 600.milliseconds,
+                                              curve: Curves.easeInOut)
+                                        ],
+                                  child: Icon(
+                                    isFavourite == true
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: getAppColorScheme(context).primary,
+                                  ))))
                       : const SizedBox()
                 ],
               ),
