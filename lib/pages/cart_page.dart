@@ -11,6 +11,7 @@ import 'package:energy_of_hco/widgets/change_int_widget.dart';
 import 'package:energy_of_hco/widgets/my_paper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
@@ -109,32 +110,41 @@ class _CartPageState extends State<CartPage> {
                             height: 5,
                           ),
                           MyPaper(
-                            child: ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  CartItem currentIndexItem =
-                                      widget.cart[index];
-                                  return ShowCartItem(
-                                    cartItem: currentIndexItem,
-                                    onItemAmountChange: (int changeAmount) {
-                                      setState(() {
-                                        editItemAmount(context,
-                                            currentIndexItem, changeAmount);
-                                      });
-                                    },
-                                    handleCartItemRemove: () =>
-                                        handleItemDeletion(
-                                            context, currentIndexItem),
-                                  );
-                                },
-                                separatorBuilder: (context, index) =>
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 30),
-                                      child: Divider(),
-                                    ),
-                                itemCount: widget.cart.length),
+                            child: AnimationLimiter(
+                              child: ListView.separated(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    CartItem currentIndexItem =
+                                        widget.cart[index];
+                                    return AnimationConfiguration.staggeredList(
+                                      position: index,
+                                      duration: Duration(milliseconds: 800),
+                                      child: SlideAnimation(
+                                        horizontalOffset: 20.0,
+                                        child: ShowCartItem(
+                                          cartItem: currentIndexItem,
+                                          onItemAmountChange: (int changeAmount) {
+                                            setState(() {
+                                              editItemAmount(context,
+                                                  currentIndexItem, changeAmount);
+                                            });
+                                          },
+                                          handleCartItemRemove: () =>
+                                              handleItemDeletion(
+                                                  context, currentIndexItem),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 30),
+                                        child: Divider(),
+                                      ),
+                                  itemCount: widget.cart.length),
+                            ),
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -219,7 +229,7 @@ class _CartPageState extends State<CartPage> {
                       Icon(Icons.local_fire_department)
                     ],
                   ),
-                ),
+                ).animate().moveY(begin: 60, duration: 2.seconds, curve: Curves.easeOutExpo),
               ),
             ),
           ],
