@@ -32,6 +32,13 @@ class _AddItemsState extends State<AddItems> {
         .addFavouriteProduct(product);
   }
 
+  void changeCartItemValueByProduct(context, Product product, int newAmount) {
+    setState(() {
+      cart.firstWhere((element) => element.product == product).amount =
+          newAmount;
+    });
+  }
+
   void removeFavouriteProduct(context, Product product) {
     Provider.of<UsersProvider>(context, listen: false)
         .removeFavouriteProduct(product);
@@ -136,6 +143,10 @@ class _AddItemsState extends State<AddItems> {
                               )),
                         ),
                       )
+                        .animate()
+                        .scaleXY(end: 1.3, duration: 100.milliseconds)
+                        .then(delay: 200.milliseconds)
+                        .scaleXY(end: 1 / 1.3, duration: 100.milliseconds)
                     : const SizedBox(),
               ],
             ),
@@ -148,7 +159,7 @@ class _AddItemsState extends State<AddItems> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: AnimationConfiguration.toStaggeredList(
                   childAnimationBuilder: (widget) => SlideAnimation(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       horizontalOffset: 50.0,
                       child: widget),
                   children: [
@@ -211,6 +222,35 @@ class _AddItemsState extends State<AddItems> {
                         }
                       },
                       cartItemsInCart: cart,
+                      onItemAmountChange: (Product product, int newAmount) {
+                        if (newAmount <= 0) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: const Text("Delete product?"),
+                                    content: const Text(
+                                        "Are you sure you want to delete the product from your cart?"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              cart.removeItemByProduct(product);
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Yes")),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("No"))
+                                    ],
+                                  ));
+                        } else {
+                          changeCartItemValueByProduct(
+                              context, product, newAmount);
+                        }
+                      },
                     )
                   ],
                 )),
@@ -246,7 +286,8 @@ class _ProductsGridView extends StatelessWidget {
       required this.onFavouriteChange,
       required this.favouriteProducts,
       required this.onProductCartStateChange,
-      required this.cartItemsInCart})
+      required this.cartItemsInCart,
+      required this.onItemAmountChange})
       : super(key: key);
 
   final List<Product> products;
@@ -254,6 +295,7 @@ class _ProductsGridView extends StatelessWidget {
   final List<Product> favouriteProducts;
   final Function(Product product, bool newValue) onProductCartStateChange;
   final List<CartItem> cartItemsInCart;
+  final Function(Product item, int amount) onItemAmountChange;
 
   bool _isItemInCart(Product item) {
     return cartItemsInCart.map((e) => e.product).contains(item);
@@ -285,23 +327,44 @@ class _ProductsGridView extends StatelessWidget {
                           currentIndexProduct.priceExclDepositDKK.toString(),
                       optionChild: _isItemInCart(currentIndexProduct)
                           ? Padding(
-                        padding: EdgeInsets.only(left: 20),
-                            child: ChangeIntTile(
-                                    onValueChange: (int value) => null,
-                                    intAmount: 1)
-                                .animate()
-                                .slideX(begin: -0.1)
-                                .fadeIn(),
-                          )
-                          : InkWell(
-                              onTap: () => onProductCartStateChange(
-                                  currentIndexProduct,
-                                  !_isItemInCart(currentIndexProduct)),
-                              child: Icon(
-                                Icons.add_shopping_cart_outlined,
-                                size: 20,
-                                color: getAppColorScheme(context).primary,
-                              )),
+                              padding: const EdgeInsets.only(left: 20),
+                              child: ChangeIntTile(
+                                      onValueChange: (int value) =>
+                                          onItemAmountChange(
+                                              currentIndexProduct,
+                                              cartItemsInCart
+                                                      .getAmountByProduct(
+                                                          currentIndexProduct) +
+                                                  value),
+                                      intAmount:
+                                          cartItemsInCart.getAmountByProduct(
+                                              currentIndexProduct))
+                                  .animate()
+                                  .slideX(begin: -0.1)
+                                  .fadeIn(),
+                            )
+                          : RepaintBoundary(
+                              child: InkWell(
+                                      onTap: () => onProductCartStateChange(
+                                          currentIndexProduct,
+                                          !_isItemInCart(currentIndexProduct)),
+                                      child: Icon(
+                                        Icons.add_shopping_cart_outlined,
+                                        size: 20,
+                                        color:
+                                            getAppColorScheme(context).primary,
+                                      ))
+                                  .animate()
+                                  .fade(duration: 600.milliseconds)
+                                  .then()
+                                  .animate(
+                                      onPlay: (controller) =>
+                                          controller.repeat())
+                                  .shimmer(
+                                      delay: 500.milliseconds,
+                                      duration: 2.seconds)
+                                  .then(duration: 4.seconds),
+                            ),
                       title: currentIndexProduct.name,
                       productImage: currentIndexProduct.image,
                       favouriteIcon: true)),
