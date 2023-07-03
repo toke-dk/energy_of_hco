@@ -85,7 +85,7 @@ class OrdersProvider extends ChangeNotifier {
       .toList();
 
   List<Order> get getPendingOrdersForDay {
-    return UnmodifiableListView(_ordersForCurrentDate
+    return UnmodifiableListView(getOrdersForDay
         .where((order) => order.orderProcess == OrderProcesses.pendingOrder));
   }
 
